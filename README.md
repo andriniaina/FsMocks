@@ -1,0 +1,4 @@
+FsMocks
+=======
+
+F# mock library
