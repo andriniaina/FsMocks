@@ -8,41 +8,7 @@
 open FsMocks
 open FsMocks.MockExpectations
 
-
-// ---------------------------- tests start here 
-
-
-
-open System.Collections
-
-(*
-let mylist1:IList = Mocks.strict()
-let mylist2:IList = Mocks.strict()
-
-
-
-
-
-[mylist1;mylist2] |> Mocks.startDefinitions
-mylist1.Count |> returns 1
-mylist2.Count |> returns 2
-[mylist1;mylist2] |> Mocks.endDefinitions
-
-printfn "%b" (mylist1.Count=1)
-printfn "%b" (mylist2.Count=2)
-
-[mylist1;mylist2] |> Mocks.verifyCalls
-*)
-
-
-//-------------------------------------------------- ordered mock
-#r @"packages\RhinoMocks.3.6.1\lib\net\Rhino.Mocks.dll"
-
-#load "Modules.fs"
-
-open FsMocks
-open FsMocks.MockExpectations
-
+//-------------------------------------------------- simple mock
 let check1 () = 
     let mocks = new Mocks.SimpleMockDefinitionBuilder()
     let o1 = mocks {
@@ -66,7 +32,9 @@ let check1 () =
     //[o1;o2] |> Mocks.verifyCalls
     mocks.verifyAll()
 
-
+check1()
+    
+//-------------------------------------------------- ordered mock
 let check2 () =
     let mocks = new Mocks.OrderedMockDefinitionBuilder()
     let l1,l2 = mocks {
@@ -86,7 +54,10 @@ let check2 () =
     printfn "verifying"
     mocks.verifyAll()
     printfn "verified"
-    
+   
+check2()
+
+//-------------------------------------------- ordered mock fails
 let check3 () =
     let builder1 = new Mocks.OrderedMockDefinitionBuilder()
     let l1,l2 = builder1 {
@@ -106,3 +77,5 @@ let check3 () =
     printfn "verifying"
     builder1.verifyAll()
     printfn "verified"
+
+check3()
