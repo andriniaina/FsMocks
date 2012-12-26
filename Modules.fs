@@ -35,7 +35,8 @@ module Mocks =
     
     [<AbstractClass>]
     type DefinitionBuilderBase() =
-        abstract repository:MockRepository with get
+        let repo = new MockRepository()
+        member x.repository = repo
 
         member x.verifyAll() = x.repository.VerifyAll()
         member x.strict args = strict x.repository args
@@ -45,9 +46,6 @@ module Mocks =
 
     type SimpleMockDefinitionBuilder() =
         inherit DefinitionBuilderBase()
-        
-        let repo = new MockRepository()
-        override x.repository = repo
 
         member x.Using(resource, expr) =
             printfn "calling BackToRecord with object type=%s" (resource.GetType().FullName)
@@ -74,9 +72,6 @@ module Mocks =
         let recordOrdered resource expr = // starts an ordered mock, evaluate the expression in between, and stops the odered mock
             use recorder = x.repository.Ordered()
             expr resource
-        
-        let repo = new MockRepository()
-        override x.repository = repo
 
         member x.Using(resource, expr) =
             resources.Add(resource) |> ignore
