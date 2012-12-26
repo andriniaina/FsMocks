@@ -5,8 +5,8 @@
 #r @"packages\RhinoMocks.3.6.1\lib\net\Rhino.Mocks.dll"
 #load "Modules.fs"
 
-open Rhino.Mocks.FsWrappers
-open Rhino.Mocks.FsWrappers.MockExpectations
+open FsMocks
+open FsMocks.MockExpectations
 
 
 // ---------------------------- tests start here 
@@ -40,20 +40,20 @@ printfn "%b" (mylist2.Count=2)
 
 #load "Modules.fs"
 
-open Rhino.Mocks.FsWrappers
-open Rhino.Mocks.FsWrappers.MockExpectations
+open FsMocks
+open FsMocks.MockExpectations
 
 let check1 () = 
     let mocks = new Mocks.SimpleMockDefinitionBuilder()
     let o1 = mocks {
-        use mylist1:System.Collections.IList = mocks.strict()
+        use mylist1:System.Collections.IList = mocks.strict []
         printfn "changing Count"
         mylist1.Count |> returns 1
         printfn "done"
         return mylist1
     }
     let o2 = mocks {
-        use mylist2:System.Collections.IList = mocks.strict()
+        use mylist2:System.Collections.IList = mocks.strict []
         printfn "changing Count"
         mylist2.Count |> returns 2
         printfn "done"
@@ -70,8 +70,8 @@ let check1 () =
 let check2 () =
     let mocks = new Mocks.OrderedMockDefinitionBuilder()
     let l1,l2 = mocks {
-        use mylist1:System.Collections.IList = mocks.strict()
-        use myDict:System.Collections.IDictionary = mocks.strict()
+        use mylist1:System.Collections.IList = mocks.strict []
+        use myDict:System.Collections.IDictionary = mocks.strict []
         printfn "changing Count"
         mylist1.Count |> returns 1
         myDict.Count |> returns 2
@@ -90,8 +90,8 @@ let check2 () =
 let check3 () =
     let builder1 = new Mocks.OrderedMockDefinitionBuilder()
     let l1,l2 = builder1 {
-        use mylist1:System.Collections.IList = builder1.strict()
-        use myDict:System.Collections.IDictionary = builder1.strict()
+        use mylist1:System.Collections.IList = builder1.strict []
+        use myDict:System.Collections.IDictionary = builder1.strict []
         printfn "changing Count"
         mylist1.Count |> returns 1
         myDict.Count |> returns 2

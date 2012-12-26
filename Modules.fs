@@ -6,7 +6,13 @@ This software/code is distributed under the BSD license (http://opensource.org/l
 
 *)
 
-namespace Rhino.Mocks.FsWrappers
+
+(*
+    usage:
+
+
+*)
+namespace FsMocks
 
 module Mocks =
 
@@ -14,48 +20,28 @@ module Mocks =
     open Rhino.Mocks
     open Rhino.Mocks.Constraints
     
-    module withConstructorArguments =
-        let strict (args) (repository:MockRepository) : 't =
-            repository.StrictMock<'t>(args |> Array.ofList)
 
-        let withDefaultValues (args) (repository:MockRepository) : 't when 't : not struct =
-            repository.DynamicMock<'t>(args |> Array.ofList)
+    let strict (repository:MockRepository) (args) : 't =
+        args |> Array.ofList |> repository.StrictMock
 
-        let withAutoWiring (args) (repository:MockRepository) : 't =
-            repository.Stub<'t>(args |> Array.ofList)
+    let withDefaultValues (repository:MockRepository) (args) : 't when 't : not struct =
+        args |> Array.ofList |> repository.DynamicMock
 
-        let reuseImplementation (args) (repository:MockRepository) : 't when 't : not struct =
-            repository.PartialMock<'t>(args |> Array.ofList)
+    let withAutoWiring (repository:MockRepository) (args) : 't =
+        args |> Array.ofList |> repository.Stub
+
+    let reuseImplementation (repository:MockRepository) (args) : 't when 't : not struct =
+        args |> Array.ofList |> repository.PartialMock
     
-    /// <summary>wrapper autour de StrictMock (lève des exceptions)</summary>
-    let strict (repo:MockRepository)  =
-        withConstructorArguments.strict [] repo
-        
-    /// <summary>wrapper autour de DynamicMock (NE lève PAS d'exceptions)</summary>
-    let withDefaultValues () =
-        withConstructorArguments.withDefaultValues []
-        
-    /// <summary>wrapper autour de Stub (branche automatiquement les propriétés et les évènements)</summary>
-    let withAutoWiring () =
-        withConstructorArguments.withAutoWiring []
-        
-    /// <summary>wrapper autour de PartialMock (réutilise toute implémentation existante)</summary>
-    let reuseImplementation () =
-        withConstructorArguments.reuseImplementation []
-
     [<AbstractClass>]
     type DefinitionBuilderBase() =
         abstract repository:MockRepository with get
 
         member x.verifyAll() = x.repository.VerifyAll()
-        member x.strict2 (args) : 't = withConstructorArguments.strict args x.repository
-        member x.withDefaultValues2 (args) : 't when 't : not struct = withConstructorArguments.withDefaultValues args x.repository
-        member x.withAutoWiring2 (args) : 't = withConstructorArguments.withAutoWiring args x.repository
-        member x.reuseImplementation2 (args) : 't when 't : not struct = withConstructorArguments.reuseImplementation args x.repository
-        member x.strict () : 'a = strict x.repository
-        member x.withDefaultValues () : 'a = x.withDefaultValues2 []
-        member x.withAutoWiring () : 'a = x.withAutoWiring2 []
-        member x.reuseImplementation () : 'a = x.reuseImplementation2 []
+        member x.strict args = strict x.repository args
+        member x.withDefaultValues args = withDefaultValues x.repository args
+        member x.withAutoWiring args = withAutoWiring x.repository args
+        member x.reuseImplementation args = reuseImplementation x.repository args
 
     type SimpleMockDefinitionBuilder() =
         inherit DefinitionBuilderBase()
@@ -85,7 +71,7 @@ module Mocks =
 
         let resources = new System.Collections.ArrayList()
         let mutable started = false
-        let useOrderedRecorder resource expr = // starts ordered mock, eval, and stops odered mock
+        let recordOrdered resource expr = // starts an ordered mock, evaluate the expression in between, and stops the odered mock
             use recorder = x.repository.Ordered()
             expr resource
         
@@ -97,7 +83,7 @@ module Mocks =
             if (not started) then
                 printfn "calling repository.Ordered with object type=%s" (resource.GetType().FullName)
                 started <- true
-                let result = useOrderedRecorder resource expr
+                let result = recordOrdered resource expr
                 for resource in resources do x.repository.Replay(resource)
                 result
             else
@@ -107,7 +93,8 @@ module Mocks =
         member x.Return(value) =
             started <- false
             value
-        member x.Zero() = ()
+        member x.Zero() =
+            printfn "zero"
 
 
 module MockExpectations =
@@ -116,7 +103,7 @@ module MockExpectations =
     open Rhino.Mocks.Constraints
 
     let returns value (call:'t) = 
-        Expect.Call<'t>(call).Return(value) |> ignore
+        Expect.Call(call).Return(value) |> ignore
 
     let ignoreArguments (call:'t) =
         Expect.Call(call).IgnoreArguments()
