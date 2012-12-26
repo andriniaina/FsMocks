@@ -46,7 +46,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Modules.fs" />
-    <Compile Include="MockDefinitionBuilder.fs" />
     <None Include="packages.config" />
     <None Include="Script.fsx" />
   </ItemGroup>
