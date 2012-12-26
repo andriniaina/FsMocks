@@ -9,7 +9,7 @@ This software/code is distributed under the BSD license (http://opensource.org/l
 
 (*
     usage:
-
+        see Tests.fsx
 
 *)
 namespace FsMocks
@@ -21,13 +21,13 @@ module Mocks =
     open Rhino.Mocks.Constraints
     
 
-    let strict (repository:MockRepository) (args) : 't =
+    let strict (repository:MockRepository) (args) =
         args |> Array.ofList |> repository.StrictMock
 
-    let withDefaultValues (repository:MockRepository) (args) : 't when 't : not struct =
+    let withDefaultValues (repository:MockRepository) (args) =
         args |> Array.ofList |> repository.DynamicMock
 
-    let withAutoWiring (repository:MockRepository) (args) : 't =
+    let withAutoWiring (repository:MockRepository) (args) =
         args |> Array.ofList |> repository.Stub
 
     let reuseImplementation (repository:MockRepository) (args) : 't when 't : not struct =
