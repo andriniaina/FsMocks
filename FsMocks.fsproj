@@ -8,9 +8,9 @@
     <ProjectGuid>{a085b9ec-8283-41e0-b8f1-e8eb21de9774}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>FsMoq</RootNamespace>
-    <AssemblyName>FsMock</AssemblyName>
+    <AssemblyName>FsMocks</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <Name>FsMock</Name>
+    <Name>FsMocks</Name>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
   </PropertyGroup>
@@ -22,7 +22,7 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Debug\FsMoq.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\FsMocks.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
