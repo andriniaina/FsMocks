@@ -14,24 +14,21 @@ let sample1 () =
     let o1 = mockProvider {
         let! (mylist1:System.Collections.IList) = mockProvider.strict []
         
-        mylist1.IsReadOnly
-            |> returns false anyTimes
+        mylist1.IsReadOnly |> returns anyTimes false
 
-        mylist1.Contains(1)
-            |> returns false once
+        mylist1.Contains(1) |> returns once false
             
-        mylist1.Add(1)
-            |> returns 1 Once
+        mylist1.Add(1) |> returns once 1
 
-        mylist1.Add(2) |> returns 2 once
-        mylist1.Contains(1) |>  returns true once
+        mylist1.Add(2) |> returns once 2
+        mylist1.Contains(1) |>  returns once true
 
         return mylist1
     }
     let o2 = mockProvider {
         let! (mylist2:System.Collections.IList) = mockProvider.strict []
 
-        mylist2.Count |> returns 2 once
+        mylist2.Count |> returns once 2
 
         return mylist2
     }
@@ -59,8 +56,8 @@ let sample2 () =
         let! (mylist1:System.Collections.IList) = mockProvider.strict []
         let! (myDict:System.Collections.IDictionary) = mockProvider.strict []
 
-        mylist1.Count |> returns 1 once
-        myDict.Count |> returns 2 once
+        mylist1.Count |> returns once 1
+        myDict.Count |> returns once 2
 
         return mylist1,myDict
     }
@@ -80,8 +77,8 @@ let sample3 () =
         let! (mylist1:System.Collections.IList) = mockBuilder.strict []
         let! (myDict:System.Collections.IDictionary) = mockBuilder.strict []
 
-        mylist1.Count |> returns 1 once
-        myDict.Count |> returns 2 once
+        mylist1.Count |> returns once 1
+        myDict.Count |> returns once 2
 
         return mylist1,myDict
     }

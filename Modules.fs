@@ -118,6 +118,14 @@ module FsMocksCommonSyntax =
         | AtLeastOnce
         | Never
         | Times of int
+
+    // lowercase synonyms of RepeatOptions
+    let once = Once
+    let anyTimes = AnyTimes
+    let twice = Twice
+    let atLeastOnce = AtLeastOnce
+    let never = Never
+    let times = Times
         
 module Syntax1 =
     open System
@@ -126,9 +134,9 @@ module Syntax1 =
     
     let is f = f
 
-    let expected repeatOptions call =
+    let expected repeats call =
         let expectation = Expect.Call<_>(call)
-        match repeatOptions with
+        match repeats with
             | AnyTimes -> expectation.Repeat.Any()
             | Once -> expectation.Repeat.Once()
             | Twice -> expectation.Repeat.Twice()
@@ -147,14 +155,7 @@ module Syntax2 =
     open Rhino.Mocks
     open Rhino.Mocks.Constraints
 
-    let once = Once
-    let anyTimes = AnyTimes
-    let twice = Twice
-    let atLeastOnce = AtLeastOnce
-    let never = Never
-    let times = Times
-
-    let returns (value) repeats (call) = 
+    let returns repeats (value) (call) = 
         let expectation = Expect.Call<_>(call).Return(value)
         
         match repeats with
