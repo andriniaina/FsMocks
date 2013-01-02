@@ -96,10 +96,25 @@ module MockExpectations =
     open Rhino.Mocks
     open Rhino.Mocks.Constraints
 
+    type RepeatOptions =
+        | AnyTimes
+        | Once
+        | Twice
+        | AtLeastOnce
+        | Never
+        | Times of int
+
     let is f = f
 
-    let expected call =
-        Expect.Call<_>(call)
+    let expected repeatOptions call =
+        let expectation = Expect.Call<_>(call)
+        match repeatOptions with
+            | AnyTimes -> expectation.Repeat.Any()
+            | Once -> expectation.Repeat.Once()
+            | Twice -> expectation.Repeat.Twice()
+            | AtLeastOnce -> expectation.Repeat.AtLeastOnce()
+            | Never -> expectation.Repeat.Never()
+            | Times(i) -> expectation.Repeat.Times(i)
         
     let setup =
         SetupResult.For
