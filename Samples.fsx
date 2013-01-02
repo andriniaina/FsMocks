@@ -6,7 +6,7 @@
 #load "Modules.fs"
 
 open FsMocks
-open FsMocks.MockExpectations
+open FsMocks.Syntax2
 
 //-------------------------------------------------- simple mock
 let sample1 () = 
@@ -15,26 +15,23 @@ let sample1 () =
         let! (mylist1:System.Collections.IList) = mockProvider.strict []
         
         mylist1.IsReadOnly
-            |> is expected AnyTimes
-            |> returns false
+            |> returns false anyTimes
 
         mylist1.Contains(1)
-            |> is expected Once
-            |> returns false
+            |> returns false once
             
         mylist1.Add(1)
-            |> is expected Once
-            |> returns 1
+            |> returns 1 Once
 
-        mylist1.Add(2) |> is expected Once |> returns 2
-        mylist1.Contains(1) |> is expected Once |> returns true
+        mylist1.Add(2) |> returns 2 once
+        mylist1.Contains(1) |>  returns true once
 
         return mylist1
     }
     let o2 = mockProvider {
         let! (mylist2:System.Collections.IList) = mockProvider.strict []
 
-        mylist2.Count |> is expected Once |> returns 2
+        mylist2.Count |> returns 2 once
 
         return mylist2
     }
@@ -62,8 +59,8 @@ let sample2 () =
         let! (mylist1:System.Collections.IList) = mockProvider.strict []
         let! (myDict:System.Collections.IDictionary) = mockProvider.strict []
 
-        setup  mylist1.Count |> returns 1
-        setup  myDict.Count |> returns 2
+        mylist1.Count |> returns 1 once
+        myDict.Count |> returns 2 once
 
         return mylist1,myDict
     }
@@ -83,8 +80,8 @@ let sample3 () =
         let! (mylist1:System.Collections.IList) = mockBuilder.strict []
         let! (myDict:System.Collections.IDictionary) = mockBuilder.strict []
 
-        mylist1.Count |> is expected Once |> returns 1
-        myDict.Count |> is expected Once |> returns 2
+        mylist1.Count |> returns 1 once
+        myDict.Count |> returns 2 once
 
         return mylist1,myDict
     }

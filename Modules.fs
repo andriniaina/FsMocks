@@ -90,11 +90,26 @@ module Mocks =
         member x.Zero() =
             printfn "zero"
 
-
-module MockExpectations =
+[<AutoOpen>]
+module FsMocksCommonSyntax =
     open System
     open Rhino.Mocks
     open Rhino.Mocks.Constraints
+
+    let ignoreArguments (c:'a Interfaces.IMethodOptions) =
+        c.IgnoreArguments()
+    
+    let ignorePropertySetter =
+        ignoreArguments
+
+    let constraintArgumentsTo (parameters:AbstractConstraint list) (c:'a Interfaces.IMethodOptions) =
+        c.Constraints (Array.ofList(parameters))
+
+    let autoproperty (c:'a Interfaces.IMethodOptions) =
+        c.PropertyBehavior()
+        
+    let onlyWhen (constraints:AbstractConstraint list) (c:'a Interfaces.IMethodOptions) =
+        c.Constraints (Array.ofList(constraints))
 
     type RepeatOptions =
         | AnyTimes
@@ -103,7 +118,12 @@ module MockExpectations =
         | AtLeastOnce
         | Never
         | Times of int
-
+        
+module Syntax1 =
+    open System
+    open Rhino.Mocks
+    open Rhino.Mocks.Constraints
+    
     let is f = f
 
     let expected repeatOptions call =
@@ -122,17 +142,26 @@ module MockExpectations =
     let returns (value) (c:'a Interfaces.IMethodOptions) = 
         c.Return(value) |> ignore
 
-    let ignoreArguments (c:'a Interfaces.IMethodOptions) =
-        c.IgnoreArguments()
-    
-    let ignorePropertySetter =
-        ignoreArguments
+module Syntax2 =
+    open System
+    open Rhino.Mocks
+    open Rhino.Mocks.Constraints
 
-    let constraintArgumentsTo (parameters:AbstractConstraint list) (c:'a Interfaces.IMethodOptions) =
-        c.Constraints (Array.ofList(parameters))
+    let once = Once
+    let anyTimes = AnyTimes
+    let twice = Twice
+    let atLeastOnce = AtLeastOnce
+    let never = Never
+    let times = Times
 
-    let autoproperty (c:'a Interfaces.IMethodOptions) =
-        c.PropertyBehavior()
+    let returns (value) repeats (call) = 
+        let expectation = Expect.Call<_>(call).Return(value)
         
-    let onlyWhen (constraints:AbstractConstraint list) (c:'a Interfaces.IMethodOptions) =
-        c.Constraints (Array.ofList(constraints))
+        match repeats with
+            | AnyTimes -> expectation.Repeat.Any()
+            | Once -> expectation.Repeat.Once()
+            | Twice -> expectation.Repeat.Twice()
+            | AtLeastOnce -> expectation.Repeat.AtLeastOnce()
+            | Never -> expectation.Repeat.Never()
+            | Times(i) -> expectation.Repeat.Times(i)
+        |> ignore
