@@ -47,7 +47,7 @@ module Mocks =
 
     type SimpleMockDefinitionBuilder() =
         inherit DefinitionBuilderBase()
-
+        
         member x.Bind(resource, expr) =
             printfn "calling BackToRecord with object type=%s" (resource.GetType().FullName)
             x.repository.BackToRecord(resource)
@@ -55,6 +55,7 @@ module Mocks =
             x.repository.Replay(resource)
             printfn "calling Replay with object type=%s" (resource.GetType().FullName)
             result
+        member x.Using = x.Bind
         member x.Return(value) =
             value
         member x.Zero() =
@@ -82,6 +83,7 @@ module Mocks =
                 result
             else
                 expr resource
+        member x.Using = x.Bind
         member x.Return(value) =
             started <- false
             value
