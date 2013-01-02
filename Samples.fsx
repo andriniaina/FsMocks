@@ -9,41 +9,61 @@ open FsMocks
 open FsMocks.MockExpectations
 
 //-------------------------------------------------- simple mock
-let check1 () = 
-    let mocks = new Mocks.SimpleMockDefinitionBuilder()
-    let o1 = mocks {
-        use mylist1:System.Collections.IList = mocks.strict []
-        printfn "changing Count"
-        mylist1.Count |> returns 1
-        printfn "done"
+let sample1 () = 
+    let mockProvider = new Mocks.SimpleMockDefinitionBuilder()
+    let o1 = mockProvider {
+        let! (mylist1:System.Collections.IList) = mockProvider.strict []
+        
+        setup  mylist1.IsReadOnly
+            |> returns false
+
+        mylist1.Contains(1)
+            |> is expected
+            |> returns false
+            
+        mylist1.Add(1)
+            |> is expected
+            |> returns 1
+
+        mylist1.Add(2) |> is expected |> returns 2
+        mylist1.Contains(1) |> is expected |> returns true
+
         return mylist1
     }
-    let o2 = mocks {
-        use mylist2:System.Collections.IList = mocks.strict []
-        printfn "changing Count"
-        mylist2.Count |> returns 2
-        printfn "done"
+    let o2 = mockProvider {
+        let! (mylist2:System.Collections.IList) = mockProvider.strict []
+
+        mylist2.Count |> is expected |> returns 2
+
         return mylist2
     }
-
+    
     printfn "o2.Count=%i" (o2.Count)
-    printfn "o1.Count=%i" (o1.Count)
 
-    //[o1;o2] |> Mocks.verifyCalls
-    mocks.verifyAll()
+    printfn "o1.IsReadOnly=%b" (o1.IsReadOnly)
 
-check1()
+    printfn "o1.Contains(1)=%b" (o1.Contains(1))
+    printfn "o1.Contains(1)=%i" (o1.Add(1))
+    printfn "o1.Contains(1)=%i" (o1.Add(2))
+    printfn "o1.Contains(1)=%b" (o1.Contains(1))
+    
+    printfn "o1.IsReadOnly=%b" (o1.IsReadOnly)
+
+
+    mockProvider.verifyExpectations()
+
+sample1()
     
 //-------------------------------------------------- ordered mock
-let check2 () =
-    let mocks = new Mocks.OrderedMockDefinitionBuilder()
-    let l1,l2 = mocks {
-        use mylist1:System.Collections.IList = mocks.strict []
-        use myDict:System.Collections.IDictionary = mocks.strict []
-        printfn "changing Count"
-        mylist1.Count |> returns 1
-        myDict.Count |> returns 2
-        printfn "done"
+let sample2 () =
+    let mockProvider = new Mocks.OrderedMockDefinitionBuilder()
+    let l1,l2 = mockProvider {
+        let! (mylist1:System.Collections.IList) = mockProvider.strict []
+        let! (myDict:System.Collections.IDictionary) = mockProvider.strict []
+
+        setup  mylist1.Count |> returns 1
+        setup  myDict.Count |> returns 2
+
         return mylist1,myDict
     }
 
@@ -51,31 +71,26 @@ let check2 () =
     printfn "l2.Count=%i" (l2.Count)
 
 
-    printfn "verifying"
-    mocks.verifyAll()
-    printfn "verified"
+    mockProvider.verifyExpectations()
    
-check2()
+sample2()
 
-//-------------------------------------------- ordered mock fails
-let check3 () =
-    let builder1 = new Mocks.OrderedMockDefinitionBuilder()
-    let l1,l2 = builder1 {
-        use mylist1:System.Collections.IList = builder1.strict []
-        use myDict:System.Collections.IDictionary = builder1.strict []
-        printfn "changing Count"
-        mylist1.Count |> returns 1
-        myDict.Count |> returns 2
-        printfn "done"
+//-------------------------------------------- this ordered mock should fail
+let sample3 () =
+    let mockBuilder = new Mocks.OrderedMockDefinitionBuilder()
+    let l1,l2 = mockBuilder {
+        let! (mylist1:System.Collections.IList) = mockBuilder.strict []
+        let! (myDict:System.Collections.IDictionary) = mockBuilder.strict []
+
+        mylist1.Count |> is expected |> returns 1
+        myDict.Count |> is expected |> returns 2
+
         return mylist1,myDict
     }
     
     printfn "l2.Count=%i" (l2.Count)
     printfn "l1.Count=%i" (l1.Count)
 
+    mockBuilder.verifyExpectations()
 
-    printfn "verifying"
-    builder1.verifyAll()
-    printfn "verified"
-
-check3()
+sample3()
