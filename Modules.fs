@@ -43,6 +43,15 @@ module Mocks =
         member x.withAutoWiring args = _withAutoWiring x.repository args
         member x.reuseImplementation args = _reuseImplementation x.repository args
 
+        member x.Zero() =
+            printfn "zero"
+        member x.For(collection:seq<_>, func) =
+            let ie = collection.GetEnumerator()
+            while (ie.MoveNext()) do
+                func ie.Current
+        member x.Combine(expr1, expr2) = expr1;  expr2
+        member x.Delay(func) = func()
+
     type SimpleMockDefinitionBuilder() =
 
 
@@ -58,14 +67,6 @@ module Mocks =
         member x.Using = x.Bind
         member x.Return(value) =
             value
-        member x.Zero() =
-            printfn "zero"
-        member x.For(collection:seq<_>, func) =
-            let ie = collection.GetEnumerator()
-            while (ie.MoveNext()) do
-                func ie.Current
-        member x.Combine(expr1, expr2) = expr1;  expr2
-        member x.Delay(func) = func()
 
 
 
@@ -93,8 +94,6 @@ module Mocks =
         member x.Return(value) =
             started <- false
             value
-        member x.Zero() =
-            printfn "zero"
 
 [<AutoOpen>]
 module CommonSyntax =
