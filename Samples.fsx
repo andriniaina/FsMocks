@@ -7,6 +7,64 @@
 
 open FsMocks
 open FsMocks.Syntax2
+open Rhino.Mocks
+
+type IC1 =
+    abstract member doSomething : string -> string
+
+type C1() = 
+    abstract member doSomething : string -> string
+    default x.doSomething(s) =
+        printfn "s=%s" s
+        "original implementation"
+
+type IActionByRef =
+    abstract member doSomething : string byref -> string
+
+let sampleInterfaceMock() = 
+    let create = Mocks.SimpleMockDefinitionBuilder()
+    let o1 = create {
+        let! (myC1:IC1) = create.strict []
+    
+        myC1.doSomething("pouet") |> returns always "e"
+        myC1.doSomething("dummy") |> returns always "d"
+
+        return myC1
+    }
+    printfn "doSomething=%s" (o1.doSomething("dummy"))
+    printfn "doSomething=%s" (o1.doSomething("f"))  // should fail
+
+let sampleVirtualMock() =
+    let create = Mocks.SimpleMockDefinitionBuilder()
+    let o1 = create {
+        let! (myC1:C1) = create.strict []
+    
+        myC1.doSomething("pouet") |> returns always "e"
+        myC1.doSomething("dummy") |> returns always "d"
+
+        return myC1
+    }
+
+    printfn "doSomething=%s" (o1.doSomething("dummy"))
+    printfn "doSomething=%s" (o1.doSomething("f"))  // should fail
+
+let sampleByRefAndMultipleCalls() =
+    let myList = ["a";"b";"c";"d"]
+    let create = Mocks.SimpleMockDefinitionBuilder()
+    let o1 = create {
+        let! (o:IActionByRef) = create.strict []
+    
+        for s in myList do
+            o.doSomething(ref s) |> returns always s
+
+        o.doSomething(ref "dummy") |> returns always "dummy"
+
+        return o
+    }
+
+    printfn "doSomething=%s" (o1.doSomething(ref "c"))
+    printfn "doSomething=%s" (o1.doSomething(ref "a"))
+
 
 //-------------------------------------------------- simple mock
 let sample1 () = 
@@ -14,7 +72,7 @@ let sample1 () =
     let o1 = mockProvider {
         let! (mylist1:System.Collections.IList) = mockProvider.strict []
         
-        mylist1.IsReadOnly |> returns anyTimes false
+        mylist1.IsReadOnly |> returns always false
 
         mylist1.Contains(1) |> returns once false
             

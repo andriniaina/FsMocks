@@ -19,8 +19,6 @@ module Mocks =
     open Rhino.Mocks
     open Rhino.Mocks.Constraints
     
-
-    
     [<AbstractClass>]
     type DefinitionBuilderBase() =
     
@@ -46,6 +44,8 @@ module Mocks =
         member x.reuseImplementation args = _reuseImplementation x.repository args
 
     type SimpleMockDefinitionBuilder() =
+
+
         inherit DefinitionBuilderBase()
         
         member x.Bind(resource, expr) =
@@ -60,6 +60,12 @@ module Mocks =
             value
         member x.Zero() =
             printfn "zero"
+        member x.For(collection:seq<_>, func) =
+            let ie = collection.GetEnumerator()
+            while (ie.MoveNext()) do
+                func ie.Current
+        member x.Combine(expr1, expr2) = expr1;  expr2
+        member x.Delay(func) = func()
 
 
 
@@ -91,7 +97,7 @@ module Mocks =
             printfn "zero"
 
 [<AutoOpen>]
-module FsMocksCommonSyntax =
+module CommonSyntax =
     open System
     open Rhino.Mocks
     open Rhino.Mocks.Constraints
@@ -121,7 +127,7 @@ module FsMocksCommonSyntax =
 
     // lowercase synonyms of RepeatOptions
     let once = Once
-    let anyTimes = AnyTimes
+    let always = AnyTimes
     let twice = Twice
     let atLeastOnce = AtLeastOnce
     let never = Never
