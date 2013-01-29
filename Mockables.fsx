@@ -26,6 +26,7 @@ let downloadGoogleHomepage_fake (url:string) =
 
 
     
+// first syntax
 Mocks.defaultFakeBuilder.Enabled <- false
 let downloadAction = Mocks.defaultFakeBuilder.Build { Actual=downloadGoogleHomepage; Faked=downloadGoogleHomepage_fake}
 Mocks.defaultFakeBuilder.Exec downloadAction "http://google.fr"   |> printfn "content=%s"
@@ -33,3 +34,6 @@ Mocks.defaultFakeBuilder.Exec downloadAction "http://google.fr"   |> printfn "co
 Mocks.defaultFakeBuilder.Enabled <- true
 Mocks.defaultFakeBuilder.Exec downloadAction "http://google.fr"   |> printfn "content=%s"
 
+// natural syntax but requires a leading additional () parameter 
+let downloadAction_natural = Mocks.defaultFakeBuilder.Build { Actual=downloadGoogleHomepage; Faked=downloadGoogleHomepage_fake}
+downloadAction_natural () "http://google.fr"   |> printfn "content=%s"

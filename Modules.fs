@@ -23,7 +23,7 @@ module Mocks =
 
     type Fakeable<'a> = {Actual:'a; Faked:'a}
     
-    /// <summary>Mocks high order functions</summary>
+    /// <summary>This is my try at mocking high order static functions</summary>
     type FakeBuilder() =
         let mutable _Enabled = false
         member x.Enabled
