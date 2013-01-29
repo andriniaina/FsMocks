@@ -3,6 +3,7 @@
 // Note that script files will not be part of the project build.
 
 #r @"packages\RhinoMocks.3.6.1\lib\net\Rhino.Mocks.dll"
+#r @"packages\FSPowerPack.Linq.Community.3.0.0.0\Lib\Net40\FSharp.PowerPack.Linq.dll"
 #load "Modules.fs"
 
 open FsMocks
@@ -23,16 +24,20 @@ type IActionByRef =
 
 let sampleInterfaceMock() = 
     let create = Mocks.SimpleMockDefinitionBuilder()
-    let o1 = create {
+    let o1,o2 = create {
         let! (myC1:IC1) = create.strict []
+        let! (mylist1:System.Collections.IList) = create.strict []
     
         myC1.doSomething("pouet") |> returns always "e"
         myC1.doSomething("dummy") |> returns always "d"
+        mylist1.Count |> returns once 1
 
-        return myC1
+        return myC1,mylist1
     }
+    printfn "doSomething=%s" (o1.doSomething("pouet"))
     printfn "doSomething=%s" (o1.doSomething("dummy"))
-    printfn "doSomething=%s" (o1.doSomething("f"))  // should fail
+    printfn "mylist1.Count=%i" (o2.Count)
+    //printfn "doSomething=%s" (o1.doSomething("f"))  // should fail
 
 let sampleVirtualMock() =
     let create = Mocks.SimpleMockDefinitionBuilder()

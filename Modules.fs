@@ -19,6 +19,24 @@ module Mocks =
     open Rhino.Mocks
     open Rhino.Mocks.Constraints
     
+    open Microsoft.FSharp.Linq.QuotationEvaluation
+
+    type Fakeable<'a> = {Actual:'a; Faked:'a}
+    
+    /// <summary>Mocks high order functions</summary>
+    type FakeBuilder() =
+        let mutable _Enabled = false
+        member x.Enabled
+             with get() = _Enabled
+             and set(value) = _Enabled <- value
+        member x.Build (o:Fakeable<'a>) =
+            <@ if x.Enabled then o.Faked else o.Actual @>.Compile()
+        member x.Exec action = action()
+    let defaultFakeBuilder = FakeBuilder()
+
+
+
+
     [<AbstractClass>]
     type DefinitionBuilderBase() =
     
@@ -53,17 +71,21 @@ module Mocks =
         member x.Delay(func) = func()
 
     type SimpleMockDefinitionBuilder() =
-
-
         inherit DefinitionBuilderBase()
+        let mutable started = false
         
         member x.Bind(resource, expr) =
-            printfn "calling BackToRecord with object type=%s" (resource.GetType().FullName)
-            x.repository.BackToRecord(resource)
-            let result = expr resource
-            x.repository.Replay(resource)
-            printfn "calling Replay with object type=%s" (resource.GetType().FullName)
-            result
+            //printfn "starting to create a mock of type %s" (resource.GetType().ToString())
+            if (not started) then
+                printfn "calling BackToRecordAll"
+                started <- true
+                x.repository.BackToRecordAll()
+                let result = expr resource
+                printfn "calling ReplayAll"
+                x.repository.ReplayAll()
+                result
+            else
+                expr resource
         member x.Using = x.Bind
         member x.Return(value) =
             value
