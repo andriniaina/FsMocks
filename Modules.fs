@@ -70,6 +70,9 @@ module Mocks =
         member x.Combine(expr1, expr2) = expr1;  expr2
         member x.Delay(func) = func()
 
+        interface IDisposable with
+            member x.Dispose() = x.verifyExpectations()
+
     type SimpleMockDefinitionBuilder() =
         inherit DefinitionBuilderBase()
         let mutable started = false
@@ -83,6 +86,7 @@ module Mocks =
                 let result = expr resource
                 printfn "calling ReplayAll"
                 x.repository.ReplayAll()
+                started <- false
                 result
             else
                 expr resource
@@ -109,6 +113,7 @@ module Mocks =
                 started <- true
                 let result = recordOrdered resource expr
                 for resource in resources do x.repository.Replay(resource)
+                started <- false
                 result
             else
                 expr resource

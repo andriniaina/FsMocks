@@ -23,7 +23,7 @@ type IActionByRef =
     abstract member doSomething : string byref -> string
 
 let sampleInterfaceMock() = 
-    let create = Mocks.SimpleMockDefinitionBuilder()
+    use create = new Mocks.SimpleMockDefinitionBuilder()
     let o1,o2 = create {
         let! (myC1:IC1) = create.strict []
         let! (mylist1:System.Collections.IList) = create.strict []
@@ -40,7 +40,7 @@ let sampleInterfaceMock() =
     //printfn "doSomething=%s" (o1.doSomething("f"))  // should fail
 
 let sampleVirtualMock() =
-    let create = Mocks.SimpleMockDefinitionBuilder()
+    use create = new  Mocks.SimpleMockDefinitionBuilder()
     let o1 = create {
         let! (myC1:C1) = create.strict []
     
@@ -55,7 +55,7 @@ let sampleVirtualMock() =
 
 let sampleByRefAndMultipleCalls() =
     let myList = ["a";"b";"c";"d"]
-    let create = Mocks.SimpleMockDefinitionBuilder()
+    use create = new Mocks.SimpleMockDefinitionBuilder()
     let o1 = create {
         let! (o:IActionByRef) = create.strict []
     
@@ -73,7 +73,7 @@ let sampleByRefAndMultipleCalls() =
 
 //-------------------------------------------------- simple mock
 let sample1 () = 
-    let mockProvider = new Mocks.SimpleMockDefinitionBuilder()
+    use mockProvider = new Mocks.SimpleMockDefinitionBuilder()
     let o1 = mockProvider {
         let! (mylist1:System.Collections.IList) = mockProvider.strict []
         
@@ -96,6 +96,7 @@ let sample1 () =
         return mylist2
     }
     
+    // strict mocks => these will fail 
     printfn "o2.Count=%i" (o2.Count)
 
     printfn "o1.IsReadOnly=%b" (o1.IsReadOnly)
@@ -107,14 +108,11 @@ let sample1 () =
     
     printfn "o1.IsReadOnly=%b" (o1.IsReadOnly)
 
-
-    mockProvider.verifyExpectations()
-
 sample1()
     
 //-------------------------------------------------- ordered mock
 let sample2 () =
-    let mockProvider = new Mocks.OrderedMockDefinitionBuilder()
+    use mockProvider = new Mocks.OrderedMockDefinitionBuilder()
     let l1,l2 = mockProvider {
         let! (mylist1:System.Collections.IList) = mockProvider.strict []
         let! (myDict:System.Collections.IDictionary) = mockProvider.strict []
@@ -128,15 +126,13 @@ let sample2 () =
     printfn "l1.Count=%i" (l1.Count)
     printfn "l2.Count=%i" (l2.Count)
 
-
-    mockProvider.verifyExpectations()
    
 sample2()
 
 //-------------------------------------------- this ordered mock should fail
 let sample3 () =
-    let mockBuilder = new Mocks.OrderedMockDefinitionBuilder()
-    let l1,l2 = mockBuilder {
+    use mockBuilder = new Mocks.OrderedMockDefinitionBuilder()
+    let oList,oDict = mockBuilder {
         let! (mylist1:System.Collections.IList) = mockBuilder.strict []
         let! (myDict:System.Collections.IDictionary) = mockBuilder.strict []
 
@@ -146,9 +142,7 @@ let sample3 () =
         return mylist1,myDict
     }
     
-    printfn "l2.Count=%i" (l2.Count)
-    printfn "l1.Count=%i" (l1.Count)
-
-    mockBuilder.verifyExpectations()
+    printfn "oList.Count=%i" (oList.Count)
+    printfn "oDict.Count=%i" (oDict.Count)
 
 sample3()
