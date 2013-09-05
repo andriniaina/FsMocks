@@ -57,6 +57,7 @@
     <None Include="packages.config" />
     <None Include="Samples.fsx" />
     <None Include="Mockables.fsx" />
+    <None Include="Samples_syntax3.fsx" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
