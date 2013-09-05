@@ -18,6 +18,8 @@ module Syntax =
     open System
     open Rhino.Mocks
     open Rhino.Mocks.Constraints
+    open Microsoft.FSharp.Quotations
+    open Microsoft.FSharp.Linq.QuotationEvaluation
 
     type RepeatOptions =
         | AnyTimes
@@ -54,10 +56,24 @@ module Syntax =
         
     type FsMockRepository() =
         let _repo = new MockRepository()
+        /// Only the methods that were explicitly recorded are accepted as valid. This means that any call that is not expected would cause an exception and fail the test. All the expected methods must be called if the object is to pass verification.
+        member x.strict args = args |> Array.ofList |> _repo.StrictMock
+        /// Mocking only requested methods: This is available for classes only. It basically means that any non abstract method call will use the original method (no mocking) instead of relying on Rhino Mocks' expectations. You can selectively decide which methods should be mocked.
+        member x.reuseImplementation args = args |> Array.ofList |> _repo.PartialMock
+        /// Create a dynamic mock and call PropertyBehavior on its methods
+        member x.autoProperties args = args |> Array.ofList |> _repo.Stub
+        /// All method calls during the replay state are accepted. If there is no special handling setup for a given method, a null or zero is returned. All of the expected methods must be called for the object to pass verification.
+        member x.withDefaultValues args = args |> Array.ofList |> _repo.DynamicMock
 
-        member x.createStrict args = args |> Array.ofList |> _repo.StrictMock
         member x.record = new RecordBuilder(_repo)
         member x.playback = new PlaybackBuilder(_repo)
+        
+        member x.recordQ (expr:unit Expr) =
+            use recorder = _repo.Record()
+            expr.Eval()
+        member x.playbackQ (expr:unit Expr) = 
+            use recorder = _repo.Playback()
+            expr.Eval()
 
     let ignoreArguments _ =
         LastCall.IgnoreArguments() |> ignore
