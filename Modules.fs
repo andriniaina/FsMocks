@@ -21,38 +21,21 @@ module Syntax =
     open Microsoft.FSharp.Quotations
     open Microsoft.FSharp.Linq.QuotationEvaluation
 
-    type RepeatOptions =
+    type OrderOption = | Ordered | Unordered
+
+    type RepeatOption =
         | AnyTimes
         | Once
         | Twice
         | AtLeastOnce
-        | Never
         | Times of int
 
     // lowercase synonyms of RepeatOptions
     let once = Once
-    let always = AnyTimes
+    let any_times = AnyTimes
     let twice = Twice
     let atLeastOnce = AtLeastOnce
-    let never = Never
     let times = Times
-    
-    type RecordBuilder(repo:MockRepository) =
-        member x.Run f =
-            use recorder = repo.Record()
-            printfn "start recording with repo %i" (repo.GetHashCode())
-            let result = f()
-            printfn "end recording"
-            result
-        member x.Delay f = f
-        member x.Zero () = ()
-
-    type PlaybackBuilder(repo:MockRepository) =
-        member x.Run f =
-            use player = repo.Playback()
-            f()
-        member x.Delay f = f
-        member x.Zero () = ()
         
     type FsMockRepository() =
         let _repo = new MockRepository()
@@ -65,23 +48,22 @@ module Syntax =
         /// All method calls during the replay state are accepted. If there is no special handling setup for a given method, a null or zero is returned. All of the expected methods must be called for the object to pass verification.
         member x.withDefaultValues args = args |> Array.ofList |> _repo.DynamicMock
 
-        member x.record = new RecordBuilder(_repo)
-        member x.playback = new PlaybackBuilder(_repo)
-        
-        member x.recordQ (expr:unit Expr) =
-            use recorder = _repo.Record()
+        member x.define (order:OrderOption) (expr:unit Expr) =
+            use recorder = match order with | Ordered -> _repo.Ordered() | Unordered -> _repo.Unordered()
             expr.Eval()
-        member x.playbackQ (expr:unit Expr) = 
+
+        member x.verify (expr:unit Expr) = 
+            _repo.ReplayAll()
             use recorder = _repo.Playback()
             expr.Eval()
 
-    let ignoreArguments _ =
+    let ignore_arguments _ =
         LastCall.IgnoreArguments() |> ignore
     
-    let ignorePropertySetter =
-        ignoreArguments
+    let ignore_property_setter =
+        ignore_arguments
 
-    let constraintArgumentsTo (parameters:AbstractConstraint list) _ =
+    let only_if_argument (parameters:AbstractConstraint list) _ =
         LastCall.Constraints(Array.ofList(parameters)) |> ignore
 
     let implement_autoproperty _ =
@@ -93,7 +75,6 @@ module Syntax =
             | Once -> r.Once()
             | Twice -> r.Twice()
             | AtLeastOnce -> r.AtLeastOnce()
-            | Never -> r.Never()
             | Times(i) -> r.Times(i)
     
     let is f = f
@@ -104,5 +85,6 @@ module Syntax =
     
     let returns value _ =
         LastCall.Return(value) |> ignore
+
     let throws repeats exceptionInstance _ =
         LastCall.Throw(exceptionInstance) |> ignore

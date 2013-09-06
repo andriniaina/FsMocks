@@ -10,40 +10,27 @@ open Rhino.Mocks
 open Rhino.Mocks.Constraints
 open System
 open FsMocks
+open Microsoft.FSharp.Quotations
+open Microsoft.FSharp.Linq.QuotationEvaluation
+
+let a = <@1@>
+
+a.Eval()
 
 let mock = FsMockRepository()
 let (mylist1:System.Collections.IList) = mock.strict []
-mock.record {
-    printfn "inside recorder"
-    mylist1.Add "e" |> expected AnyTimes |> constraintArgumentsTo [Is.NotNull()] |> returns 1
+mock.define Ordered 
+    <@
+    mylist1.Add "e" |> expected any_times |> only_if_argument [Is.NotNull()] |> returns 1
     mylist1.Clear() |> expected twice
-}
+@>
 
-
-mock.playback {
+mock.verify
+    <@
     let r = mylist1.Add("unknown argument")
     printfn "r=%i" r
     mylist1.Add("another argument") |> ignore
-    //should throw an expection : mylist1.Add(null) |> ignore
     mylist1.Clear()
     mylist1.Clear()
-}
-
-
-let mock2 = FsMockRepository()
-let (mylist2:System.Collections.IList) = mock2.strict []
-mock2.recordQ <@
-                    printfn "inside recorder"
-                    mylist2.Add "e" |> expected AnyTimes |> constraintArgumentsTo [Is.NotNull()] |> returns 1
-                    mylist2.Clear() |> expected twice
 @>
 
-
-mock2.playbackQ <@
-                    let r = mylist2.Add("unknown argument")
-                    printfn "inside playback r=%i" r
-                    mylist2.Add("another argument") |> ignore
-                    //should throw an expection : mylist1.Add(null) |> ignore
-                    mylist2.Clear()
-                    mylist2.Clear()
-@>
