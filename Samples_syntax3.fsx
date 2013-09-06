@@ -1,7 +1,7 @@
 ﻿
 
-#r @"packages\FSPowerPack.Core.Community.3.0.0.0\Lib\Net40\FSharp.PowerPack.dll"
-#r @"packages\FSPowerPack.Linq.Community.3.0.0.0\Lib\Net40\FSharp.PowerPack.Linq.dll"
+#r @"packages\FSPowerPack.Core.Community.3.0.0.0\Lib\Net20\FSharp.PowerPack.dll"
+#r @"packages\FSPowerPack.Linq.Community.3.0.0.0\Lib\Net20\FSharp.PowerPack.Linq.dll"
 
 #r @"packages\RhinoMocks.3.6.1\lib\net\Rhino.Mocks.dll"
 #load "modules.fs"
