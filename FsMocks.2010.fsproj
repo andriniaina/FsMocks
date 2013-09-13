@@ -23,6 +23,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <DocumentationFile>bin\Debug\FsMocks.XML</DocumentationFile>
+    <StartAction>Program</StartAction>
+    <StartProgram>C:\Program Files\Microsoft Office\Office12\excel.exE</StartProgram>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

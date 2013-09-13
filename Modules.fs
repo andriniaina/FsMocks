@@ -80,8 +80,8 @@ module Syntax =
     let ignore_property_setter =
         ignore_arguments
 
-    let only_if_argument parameters = 
-        LastCall.Constraints(Array.ofList(parameters)) |> ignore
+    let only_if_argument constaints _ = 
+        LastCall.Constraints(Array.ofList(constaints)) |> ignore
     let autoimplement_property _ =
         LastCall.PropertyBehavior() |> ignore
 
@@ -96,7 +96,7 @@ module Syntax =
             | Times(i) -> LastCall.Repeat.Times(i)
         |> ignore
 
-    let manual_implementation action _ =
+    let implement_as action _ =
         LastCall.Do(action) |> ignore
 
     /// same as expected but for events
