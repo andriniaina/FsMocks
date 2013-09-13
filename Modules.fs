@@ -16,8 +16,8 @@ namespace FsMocks
 /// Sample statements :
 ///     let mock = FsMockRepository()
 ///     let mylist:IList = mock.strict []       // other commands : strict/reuseImplementation/autoProperties/withDefaultValues
-///     mock.define Ordered <@   /*mock statements*/   @>
-///     mock.verify <@   /*test statements*/   @>
+///     mock.define Ordered {   /*mock statements*/   }
+///     mock.verify (fun()->   /*test statements*/   )
 ///
 ///  example mock statements :
 ///    mylist.Add 1 |> expected twice |> only_if_argument [Is.NotNull()] |> returns 1
@@ -96,8 +96,8 @@ module Syntax =
             | Times(i) -> LastCall.Repeat.Times(i)
         |> ignore
 
-    let implement_as action _ =
-        LastCall.Do(action) |> ignore
+    let implement_as ``delegate`` _ =
+        LastCall.Do(``delegate``) |> ignore
 
     /// same as expected but for events
     let subscription expected_function occurence event =
