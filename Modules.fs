@@ -85,7 +85,8 @@ module Syntax =
     let autoimplement_property _ =
         LastCall.PropertyBehavior() |> ignore
 
-    //let is f = f
+    let action (f:unit->unit) =
+        Expect.Call(new Expect.Action(f))
 
     let expected occurence _ =
         match occurence with
@@ -95,9 +96,12 @@ module Syntax =
             | AtLeastOnce -> LastCall.Repeat.AtLeastOnce()
             | Times(i) -> LastCall.Repeat.Times(i)
         |> ignore
-
-    let manual_implementation action _ =
-        LastCall.Do(action) |> ignore
+        
+    let empty_function = new Action( fun()->()) // just a simple helper to mock unit-unit functions
+    let autoproperty = new Action( fun()->())
+    let implement_as f _ =
+        if (autoproperty=f) then LastCall.PropertyBehavior() |> ignore
+        else LastCall.Do(f) |> ignore
 
     /// same as expected but for events
     let subscription expected_function occurence event =
