@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<!-- saved from url=(0032)http://fsharp.github.io/fsharpx/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href="./FsMocks_files/css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="print.css" media="print">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Fsharpx by fsharp</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Fsharpx</h1>
+          <h2>Extensions and Tools for F# Programming</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/fsharp/fsharpx" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <h2>Use via NuGET</h2>
+
+<pre><code>Install-Package FsMocks
+</code></pre>
+
+<h2>FsMocks</h2>
+
+<p>FsMocks is an object mocking library written in F#.
+It is actually a wrapper around <a href="http://ayende.com/wiki/Rhino+Mocks+Documentation.ashx">Rhino.Mocks</a> that simplifies mocking with F#.
+<br/>
+The API is simple and straightforward because it uses a human-friendly DSL syntax.
+
+
+<h3>Sample</h3>
+
+<!--<h4>Mock</h4>-->
+<p>This sample creates a new IList and expects calls to the methods Add() and Clear(), in any order, but with some constraints.</p>
+
+<script src="https://gist.github.com/andriniaina/6553995.js"></script>
+
+
+<h3>Mock statements syntax</h3>
+<p>A mock object is created using one of the following functions:</p>
+<pre>
+</pre>
+<p>The function mock.define takes two arguments: a mocking option (Unordered or Ordered) and a computation expression that takes a series of mock statements.</p>
+<p>A mock statement is a unit expression that begins with the call or property to mock followed by mock directives:</p>
+<pre>
+// the call is expected <i>N</i> times
+o.call() |&gt; expected <i>N</i> 
+
+// the mock object will return  <i>object</i> when this expectation is satisfied
+o.call() |&gt; returns <i>object</i> 
+
+// the call is expected only if it respects the given constraints
+o.call() |&gt; only_if_argument <i>constraints_list</i> 
+
+// Property1 is implemented as a simple get/set property
+o.Property1 |&gt; autoimplement_property 
+
+// the most powerful statement : the call is manually implemented
+let myClearImplementation = new Action(fun() -gt; printfn "list cleared!!!")
+list.Clear() |&gt; implement_as <i>myClearImplementation</i> 
+
+// throws an expectation whenever a method is called
+o.call() |&gt; throws (new Exception("Something went wrong!!"))
+
+// subscribe to an event and simulate an event
+let b:Button = mock.strict []
+let clickRaiser = mock.getEventRaiser(b.Click)
+mock.define Ordered {
+    b.Click |gt; subscription expected once
+}
+mock.verify (fun()-&gt;
+    b.Click |&gt; Event.add (fun _ -&gt; printfn "clicked!" )
+    clickRaiser.Raise(b, new EventArgs())
+)
+
+</pre>
+
+
+
+<h4></h4>
+<pre></pre>
+
+        </section>
+
+<!--<p><a href="https://github.com/fsharp/fsharpx/edit/gh-pages/index.html">Edit</a> this page</p>-->
+
+        <footer>
+          Fsharpx is maintained by <a href="http://andriniaina.github.com/">Andri Rakotomalala</a>.
+        </footer>
+        
+      </div>
+    </div>
+  
+
+
+</body></html>

@@ -1,4 +1,4 @@
-﻿(*
+(*
 Copyright (c) 2012, Andri Rakotomalala
  All rights reserved.
 
@@ -16,8 +16,8 @@ namespace FsMocks
 /// Sample statements :
 ///     let mock = FsMockRepository()
 ///     let mylist:IList = mock.strict []       // other commands : strict/reuseImplementation/autoProperties/withDefaultValues
-///     mock.define Ordered <@   /*mock statements*/   @>
-///     mock.verify <@   /*test statements*/   @>
+///     mock.define Ordered {   /*mock statements*/   }
+///     mock.verify (fun()->   /*test statements*/   )
 ///
 ///  example mock statements :
 ///    mylist.Add 1 |> expected twice |> only_if_argument [Is.NotNull()] |> returns 1
@@ -80,8 +80,8 @@ module Syntax =
     let ignore_property_setter =
         ignore_arguments
 
-    let only_if_argument parameters = 
-        LastCall.Constraints(Array.ofList(parameters)) |> ignore
+    let only_if_argument constraints _ = 
+        LastCall.Constraints(Array.ofList(constraints)) |> ignore
     let autoimplement_property _ =
         LastCall.PropertyBehavior() |> ignore
 
@@ -96,7 +96,7 @@ module Syntax =
             | AtLeastOnce -> LastCall.Repeat.AtLeastOnce()
             | Times(i) -> LastCall.Repeat.Times(i)
         |> ignore
-        
+
     let empty_function = new Action( fun()->()) // just a simple helper to mock unit-unit functions
     let autoproperty = new Action( fun()->())
     let implement_as f _ =
