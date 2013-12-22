@@ -13,17 +13,23 @@ This software/code is distributed under the BSD license (http://opensource.org/l
 *)
 namespace FsMocks
 
-/// Sample statements :
-///     let mock = FsMockRepository()
-///     let mylist:IList = mock.strict []       // other commands : strict/reuseImplementation/autoProperties/withDefaultValues
-///     mock.define Ordered {   /*mock statements*/   }
-///     mock.verify (fun()->   /*test statements*/   )
+/// Create a repository :
+///    let mock = FsMockRepository()
+/// Create a mock object :
+///    let mylist:IList = mock.strict []       // other commands : strict/reuseImplementation/autoProperties/withDefaultValues
+/// Create an event raiser :
+///    let clickButtonEvent = mock.getEventRaiser (b.Click)
+/// Define expectations :
+///    mock.define Ordered {   /*mock statements*/   }
+/// Verify expectations :
+///    mock.verify (fun()->   /*test statements*/   )
 ///
 ///  example mock statements :
 ///    mylist.Add 1 |> expected twice |> only_if_argument [Is.NotNull()] |> returns 1
 ///    mylist.Add null |> expected once |> throws (new ArgumentException())
 ///    mylist.Count |> implement_autoproperty
 ///    mylist.Item(null) |> for_any_argument_value |> returns 2
+///    let button.Click |> subscription expected once
 ///    
 module Syntax =
     open System
