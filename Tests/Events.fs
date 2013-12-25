@@ -7,7 +7,7 @@ open System.Collections.Generic
 open System.Windows.Forms
 
 module Events =
-    let [<Fact>] ``raise an event``() =
+    let [<Fact>] ``manually raise an event``() =
         let mock = FsMockRepository()
         let b:Button = mock.strict []
         let clickButtonEvent = mock.getEventRaiser (b.Click)

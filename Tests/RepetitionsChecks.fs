@@ -5,7 +5,7 @@ open FsMocks.Syntax
 open System.Collections.Generic
 
 module RepetitionsTests =
-    let [<Fact>] ``repetition occurence should default to Once``() =
+    let [<Fact>] ``1) repetition occurence should default to Once``() =
         let mock = FsMockRepository()
         let list:int IList = mock.strict []
         mock.define Unordered {
@@ -13,7 +13,7 @@ module RepetitionsTests =
         }
         mock.verify (fun() -> list.Clear())
 
-    let [<Fact>] ``simple strict mock with repetition=Once``() =
+    let [<Fact>] ``2) simple strict mock with repetition=Once``() =
         let mock = FsMockRepository()
         let list:int IList = mock.strict []
         mock.define Unordered {
@@ -21,7 +21,7 @@ module RepetitionsTests =
         }
         mock.verify (fun() -> list.Clear())
 
-    let [<Fact>] ``simple strict mock with repetition=Twice``() =
+    let [<Fact>] ``2b) simple strict mock with repetition=Twice``() =
         let mock = FsMockRepository()
         let list:int IList = mock.strict []
         mock.define Unordered {
@@ -29,7 +29,7 @@ module RepetitionsTests =
         }
         mock.verify (fun() -> list.Clear(); list.Clear())
 
-    let [<Fact>] ``simple strict mock expected N Times``() =
+    let [<Fact>] ``2c) simple strict mock expected N Times``() =
         let mock = FsMockRepository()
         let list:int IList = mock.strict []
         mock.define Unordered {
@@ -37,7 +37,7 @@ module RepetitionsTests =
         }
         mock.verify (fun() -> for i in 1..7 do list.Clear())
             
-    let [<Fact>] ``simple strict mock with repetition=AnyTime called 0 times``() =
+    let [<Fact>] ``3) simple strict mock with repetition=AnyTime called 0 times``() =
         let mock = FsMockRepository()
         let list:int IList = mock.strict []
         mock.define Unordered {
@@ -45,7 +45,7 @@ module RepetitionsTests =
         }
         mock.verify (fun() ->())
 
-    let [<Fact>] ``simple strict mock with repetition=AnyTime called N times``() =
+    let [<Fact>] ``3b) simple strict mock with repetition=AnyTime called N times``() =
         let mock = FsMockRepository()
         let list:int IList = mock.strict []
         mock.define Unordered {
@@ -55,7 +55,7 @@ module RepetitionsTests =
                 for i in 0..13 do list.Clear()
             )
             
-    let [<Fact>] ``simple strict mock with repetition=AtLeastOnce called 0 times should throw an ExpectationViolationException``() =
+    let [<Fact>] ``4) simple strict mock with repetition=AtLeastOnce called 0 times should throw an ExpectationViolationException``() =
         let mock = FsMockRepository()
         let list:int IList = mock.strict []
         mock.define Unordered {
@@ -65,7 +65,7 @@ module RepetitionsTests =
             mock.verify (fun() ->())
             )
         
-    let [<Fact>] ``simple strict mock with repetition=AtLeastOnce called 1 time``() =
+    let [<Fact>] ``4b) simple strict mock with repetition=AtLeastOnce called 1 time``() =
         let mock = FsMockRepository()
         let list:int IList = mock.strict []
         mock.define Unordered {
@@ -73,7 +73,7 @@ module RepetitionsTests =
         }
         mock.verify (fun() -> list.Clear())
         
-    let [<Fact>] ``simple strict mock with repetition=AtLeastOnce called N times``() =
+    let [<Fact>] ``4c) simple strict mock with repetition=AtLeastOnce called N times``() =
         let mock = FsMockRepository()
         let list:int IList = mock.strict []
         mock.define Unordered {

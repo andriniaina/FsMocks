@@ -6,10 +6,10 @@ open Xunit
 open FsMocks.Syntax
 open System.Collections.Generic
 
-module withDefaultValues = 
-    let [<Fact>] withDefaultValues() =
+module emptyImplementation = 
+    let [<Fact>] ``emptyImplementation should implement all methods and properties and do nothing``() =
         let mock = FsMockRepository()
-        let o:Control = mock.withDefaultValues []
+        let o:Control = mock.emptyImplementation []
         mock.define Unordered {
             ()  // no expectation : it's a dynamic mock : everything is allowed, all functions/properties are empty and return default values
         }

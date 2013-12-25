@@ -7,7 +7,7 @@ open System.Collections.Generic
 open System.Windows.Forms
 
 module reuseImplementation =
-    let [<Fact>] ``reuseImplementation``() =
+    let [<Fact>] ``reuseImplementation aka partial mock``() =
         let mock = FsMockRepository()
         let o:Control = mock.reuseImplementation []
         mock.define Unordered {

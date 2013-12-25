@@ -66,10 +66,9 @@ module Syntax =
         /// aka Stub : Create a dynamic mock and call PropertyBehavior on its properties
         member x.autoProperties args = args |> Array.ofList |> repo.Stub
         /// aka DynamicMocks : All method calls during the replay state are accepted. If there is no special handling setup for a given method, a null or zero is returned. All of the expected methods must be called for the object to pass verification.
-        member x.withDefaultValues args = args |> Array.ofList |> repo.DynamicMock
-        
+        member x.emptyImplementation args = args |> Array.ofList |> repo.DynamicMock
+        /// !! this should be called before mock definitions
         member x.getEventRaiser (evt) =
-            //if repo.IsInReplayMode(o) then failwith "The raiser can be created only when recording"
             evt |> Event.add (fun _ -> ())
             let raiser = LastCall.IgnoreArguments().GetEventRaiser()
             repo.BackToRecordAll() // reset all recorders
@@ -88,14 +87,15 @@ module Syntax =
     let ignore_property_setter =
         ignore_arguments
 
+    /// use any Rhino.Mocks.Constraint.*
     let only_if_argument constraints _ = 
         LastCall.Constraints(Array.ofList(constraints)) |> ignore
     let autoimplement_property _ =
         LastCall.PropertyBehavior() |> ignore
-
-    let action (f:unit->unit) =
+        (*
+    let as_action (f:unit->unit) =
         Expect.Call(new Expect.Action(f)) |> ignore
-
+        *)
     let expected occurence _ =
         match occurence with
             | AnyTime -> LastCall.Repeat.Any()
@@ -111,9 +111,10 @@ module Syntax =
         if (autoproperty=f) then autoimplement_property()
         else LastCall.Do(f) |> ignore
 
-    /// same as expected but for events
-    let subscription expected_function occurence event =
-        event |> Event.add (fun _ -> ()) |> ignore_arguments |> expected_function occurence
+    /// same as 'expected' but for events
+    /// usual syntax :     event |> subscription expected twice
+    let subscription expectation_function occurence event =
+        event |> Event.add (fun _ -> ()) |> ignore_arguments |> expectation_function occurence
     
     let returns (value:obj) _ =
         LastCall.Return(value) |> ignore

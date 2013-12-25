@@ -6,7 +6,7 @@ open FsMocks.Syntax
 open System.Collections.Generic
 
 module ForceImplementation =
-    let [<Fact>] ``implement as autoproperty``() =
+    let [<Fact>] ``property autoimplementation``() =
         let mock = FsMockRepository()
         let o:AnyInterface = mock.strict []
         mock.define Unordered {
@@ -16,7 +16,7 @@ module ForceImplementation =
             o.VirtualProperty <- "value"
             Assert.Equal<string>("value", o.VirtualProperty)
             )
-    let [<Fact>] ``force method implementation``() =
+    let [<Fact>] ``manual method implementation``() =
         let v = ref ""
         let changeValue () = v:="value"
         let mock = FsMockRepository()

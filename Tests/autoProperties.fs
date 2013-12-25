@@ -7,11 +7,11 @@ open FsMocks.Syntax
 open System.Collections.Generic
 
 module autoProperties = 
-    let [<Fact>] ``autoProperties``() =
+    let [<Fact>] ``autoProperties/stub get and set, and method calls``() =
         let mock = FsMockRepository()
         let o:Control = mock.autoProperties []
         mock.define Unordered {
-            ()  // no expectation : it's a dynamic mock : everything is allowed, everything is either an autoproperty or returns a default value
+            ()  // no expectation : it's a stub : everything is allowed, all methods are return a default value, all properties are wired as autoproperties
         }
         mock.verify (fun() ->
             // check autoproperty
