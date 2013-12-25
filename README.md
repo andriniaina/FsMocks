@@ -14,6 +14,7 @@ This sample creates a new IList and expects calls to the methods _Add()_ _Clear(
 
 ```fsharp
 open System.Collections
+open FsMocks.Syntax
 // create mock object and repository
 let mock = FsMockRepository()
 let mylist1:IList = mock.strict []
