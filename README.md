@@ -20,8 +20,7 @@ let mylist1:IList = mock.strict []
 
 // define mock statements
 mock.define Unordered {
-  mylist1.Contains(1) |> returns false |> only_if_argument [Is.LessThanOrEqual(300)]
-  mylist1.Add "e" |> expected at_any_moment |> only_if_argument [Is.NotNull()]
+  mylist1.Add "e" |> expected once |> returns 2 |> only_if_argument [Is.NotNull()]
   mylist1.Clear() |> expected twice
 }
 
@@ -29,10 +28,9 @@ mock.define Unordered {
 // the test will fail if any unexpected calls was made in the 'verify' block
 // FsMocks can be combined with any test framework (NUnit, xUnit, FsUnit, etc.)
 mock.verify (fun()->
-	mylist1.Add("unknown argument") |> should equal 1  // FsUnit syntax
 	mylist1.Clear()
+	mylist1.Add("another argument") |> should equal 2  // FsUnit syntax
 	mylist1.Clear()
-	mylist1.Add("another argument") |> ignore
 )
 ```
 
