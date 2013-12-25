@@ -29,13 +29,13 @@ module RepetitionsTests =
         }
         mock.verify (fun() -> list.Clear(); list.Clear())
 
-    let [<Fact>] ``simple strict mock with repetition=Times(N)``() =
+    let [<Fact>] ``simple strict mock expected N Times``() =
         let mock = FsMockRepository()
         let list:int IList = mock.strict []
         mock.define Unordered {
-            list.Clear() |> expected (times 21)
+            list.Clear() |> expected (times 7)
         }
-        mock.verify (fun() -> for i in 1..21 do list.Clear())
+        mock.verify (fun() -> for i in 1..7 do list.Clear())
             
     let [<Fact>] ``simple strict mock with repetition=AnyTime called 0 times``() =
         let mock = FsMockRepository()
@@ -52,7 +52,7 @@ module RepetitionsTests =
             list.Clear() |> expected at_any_moment
         }
         mock.verify (fun() ->
-                for i in 0..20 do list.Clear()
+                for i in 0..13 do list.Clear()
             )
             
     let [<Fact>] ``simple strict mock with repetition=AtLeastOnce called 0 times should throw an ExpectationViolationException``() =
