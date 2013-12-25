@@ -51,6 +51,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <Compile Include="AnyClass.fs" />
     <Compile Include="ArgumentChecks.fs" />
     <Compile Include="RepetitionsChecks.fs" />
@@ -58,7 +59,6 @@
     <Compile Include="ReturnValues.fs" />
     <Compile Include="ForceImplementation.fs" />
     <Compile Include="ActionExpectation.fs" />
-    <None Include="packages.config" />
     <Compile Include="Events.fs" />
     <Compile Include="OrderedExpectations.fs" />
     <Compile Include="reuseImplementation.fs" />

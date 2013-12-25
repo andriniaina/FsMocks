@@ -10,7 +10,7 @@ module ForceImplementation =
         let mock = FsMockRepository()
         let o:AnyInterface = mock.strict []
         mock.define Unordered {
-            o.VirtualProperty |> implement_as autoproperty
+            o.VirtualProperty |> implement_as_property
         }
         mock.verify (fun() ->
             o.VirtualProperty <- "value"

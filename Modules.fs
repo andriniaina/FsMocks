@@ -27,7 +27,7 @@ namespace FsMocks
 ///  example mock statements :
 ///    mylist.Add 1 |> expected twice |> only_if_argument [Is.NotNull()] |> returns 1
 ///    mylist.Add null |> expected once |> throws (new ArgumentException())
-///    mylist.Count |> implement_autoproperty
+///    mylist.Count |> implement_as_property
 ///    mylist.Item(null) |> for_any_argument_value |> returns 2
 ///    let button.Click |> subscription expected once
 ///    
@@ -60,12 +60,16 @@ module Syntax =
     type FsMockRepository() =
         let repo = new MockRepository()
         /// aka StrictMock : Only the methods that were explicitly recorded are accepted as valid. This means that any call that is not expected would cause an exception and fail the test. All the expected methods must be called if the object is to pass verification.
+        /// <param name="args">Class constructor arguments</param>
         member x.strict args = args |> Array.ofList |> repo.StrictMock
         /// aka PartialMock : Mocking only requested methods: This is available for classes only. It basically means that any non abstract method call will use the original method (no mocking) instead of relying on Rhino Mocks' expectations. You can selectively decide which methods should be mocked.
+        /// <param name="args">Class constructor arguments</param>
         member x.reuseImplementation args = args |> Array.ofList |> repo.PartialMock
         /// aka Stub : Create a dynamic mock and call PropertyBehavior on its properties
+        /// <param name="args">Class constructor arguments</param>
         member x.autoProperties args = args |> Array.ofList |> repo.Stub
         /// aka DynamicMocks : All method calls during the replay state are accepted. If there is no special handling setup for a given method, a null or zero is returned. All of the expected methods must be called for the object to pass verification.
+        /// <param name="args">Class constructor arguments</param>
         member x.emptyImplementation args = args |> Array.ofList |> repo.DynamicMock
         /// !! this should be called before mock definitions
         member x.getEventRaiser (evt) =
@@ -90,12 +94,10 @@ module Syntax =
     /// use any Rhino.Mocks.Constraint.*
     let only_if_argument constraints _ = 
         LastCall.Constraints(Array.ofList(constraints)) |> ignore
-    let autoimplement_property _ =
-        LastCall.PropertyBehavior() |> ignore
-        (*
-    let as_action (f:unit->unit) =
-        Expect.Call(new Expect.Action(f)) |> ignore
-        *)
+        
+    let ToAction (f:unit->unit) =
+        new Action(f)
+        
     let expected occurence _ =
         match occurence with
             | AnyTime -> LastCall.Repeat.Any()
@@ -105,11 +107,11 @@ module Syntax =
             | Times(i) -> LastCall.Repeat.Times(i)
         |> ignore
 
-    let empty_function = new Action( fun()->()) // just a simple helper to mock unit->unit functions
-    let autoproperty = new Action( fun()->())
+    let implement_as_property _ =
+        LastCall.PropertyBehavior() |> ignore
+    let autoproperty = new Action(fun()->())
     let implement_as f _ =
-        if (autoproperty=f) then autoimplement_property()
-        else LastCall.Do(f) |> ignore
+        LastCall.Do(f) |> ignore
 
     /// same as 'expected' but for events
     /// usual syntax :     event |> subscription expected twice
