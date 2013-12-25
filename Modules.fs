@@ -51,7 +51,7 @@ module Syntax =
     let at_least_once = AtLeastOnce
     let times = Times
     
-    type RecordBuilder(recorder:IDisposable) =
+    type ExpectationBuilder(recorder:IDisposable) =
         member x.Zero () = ()
         member x.Delay (f) =
             f() |> ignore
@@ -75,7 +75,7 @@ module Syntax =
             repo.BackToRecordAll() // reset all recorders
             raiser
         member x.define (order:OrderOptions) =
-            new RecordBuilder(match order with | Unordered -> repo.Unordered() | Ordered -> repo.Ordered())
+            new ExpectationBuilder(match order with | Unordered -> repo.Unordered() | Ordered -> repo.Ordered())
         member x.verify (f:unit->unit) = 
             repo.ReplayAll()
             use recorder = repo.Playback()
