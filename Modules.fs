@@ -51,18 +51,21 @@ module Syntax =
     let at_least_once = AtLeastOnce
     let times = Times
     
-    type RecordBuilder() =
+    type RecordBuilder(recorder:IDisposable) =
         member x.Zero () = ()
+        member x.Delay (f) =
+            f() |> ignore
+            recorder.Dispose()
 
     type FsMockRepository() =
         let repo = new MockRepository()
-        /// Only the methods that were explicitly recorded are accepted as valid. This means that any call that is not expected would cause an exception and fail the test. All the expected methods must be called if the object is to pass verification.
+        /// aka StrictMock : Only the methods that were explicitly recorded are accepted as valid. This means that any call that is not expected would cause an exception and fail the test. All the expected methods must be called if the object is to pass verification.
         member x.strict args = args |> Array.ofList |> repo.StrictMock
-        /// Mocking only requested methods: This is available for classes only. It basically means that any non abstract method call will use the original method (no mocking) instead of relying on Rhino Mocks' expectations. You can selectively decide which methods should be mocked.
+        /// aka PartialMock : Mocking only requested methods: This is available for classes only. It basically means that any non abstract method call will use the original method (no mocking) instead of relying on Rhino Mocks' expectations. You can selectively decide which methods should be mocked.
         member x.reuseImplementation args = args |> Array.ofList |> repo.PartialMock
-        /// Create a dynamic mock and call PropertyBehavior on its methods
+        /// aka Stub : Create a dynamic mock and call PropertyBehavior on its properties
         member x.autoProperties args = args |> Array.ofList |> repo.Stub
-        /// All method calls during the replay state are accepted. If there is no special handling setup for a given method, a null or zero is returned. All of the expected methods must be called for the object to pass verification.
+        /// aka DynamicMocks : All method calls during the replay state are accepted. If there is no special handling setup for a given method, a null or zero is returned. All of the expected methods must be called for the object to pass verification.
         member x.withDefaultValues args = args |> Array.ofList |> repo.DynamicMock
         
         member x.getEventRaiser (evt) =
@@ -72,8 +75,7 @@ module Syntax =
             repo.BackToRecordAll() // reset all recorders
             raiser
         member x.define (order:OrderOptions) =
-            use recorder = match order with | Ordered -> repo.Ordered() | Unordered -> repo.Unordered()
-            new RecordBuilder()
+            new RecordBuilder(match order with | Unordered -> repo.Unordered() | Ordered -> repo.Ordered())
         member x.verify (f:unit->unit) = 
             repo.ReplayAll()
             use recorder = repo.Playback()
@@ -92,7 +94,7 @@ module Syntax =
         LastCall.PropertyBehavior() |> ignore
 
     let action (f:unit->unit) =
-        Expect.Call(new Expect.Action(f))
+        Expect.Call(new Expect.Action(f)) |> ignore
 
     let expected occurence _ =
         match occurence with
@@ -103,10 +105,10 @@ module Syntax =
             | Times(i) -> LastCall.Repeat.Times(i)
         |> ignore
 
-    let empty_function = new Action( fun()->()) // just a simple helper to mock unit-unit functions
+    let empty_function = new Action( fun()->()) // just a simple helper to mock unit->unit functions
     let autoproperty = new Action( fun()->())
     let implement_as f _ =
-        if (autoproperty=f) then LastCall.PropertyBehavior() |> ignore
+        if (autoproperty=f) then autoimplement_property()
         else LastCall.Do(f) |> ignore
 
     /// same as expected but for events

@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsMocks", "FsMocks.fsproj", "{A085B9EC-8283-41E0-B8F1-E8EB21DE9774}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Tests", "Tests\Tests.fsproj", "{82E0E98B-4A22-4FD3-AC60-5789A6746C98}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,16 @@ Global
 		{A085B9EC-8283-41E0-B8F1-E8EB21DE9774}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{A085B9EC-8283-41E0-B8F1-E8EB21DE9774}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{A085B9EC-8283-41E0-B8F1-E8EB21DE9774}.Release|x86.ActiveCfg = Release|Any CPU
+		{82E0E98B-4A22-4FD3-AC60-5789A6746C98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82E0E98B-4A22-4FD3-AC60-5789A6746C98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82E0E98B-4A22-4FD3-AC60-5789A6746C98}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{82E0E98B-4A22-4FD3-AC60-5789A6746C98}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{82E0E98B-4A22-4FD3-AC60-5789A6746C98}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{82E0E98B-4A22-4FD3-AC60-5789A6746C98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82E0E98B-4A22-4FD3-AC60-5789A6746C98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82E0E98B-4A22-4FD3-AC60-5789A6746C98}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{82E0E98B-4A22-4FD3-AC60-5789A6746C98}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{82E0E98B-4A22-4FD3-AC60-5789A6746C98}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
