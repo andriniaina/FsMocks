@@ -10,7 +10,7 @@ It can be combined with other test frameworks (NUnit, xUnit, FsUnit, etc.)
 
 Samples
 ---------------------
-This sample creates a new IList and expects calls to the methods _Add()_ _Clear()_ _Contains()_, in any order, but with some constraints.
+This sample creates a new IList and expects calls to the methods _Add()_ and _Clear()_, in any order, but with some constraints.
 
 ```fsharp
 open System.Collections
@@ -27,7 +27,6 @@ mock.define Unordered {
 
 // test and verify expectations !!
 // the test will fail if any unexpected calls was made in the 'verify' block
-// FsMocks can be combined with any test framework (NUnit, xUnit, FsUnit, etc.)
 mock.verify (fun()->
 	mylist1.Clear()
 	mylist1.Add("another argument") |> should equal 2  // FsUnit syntax
