@@ -16,7 +16,7 @@ This sample creates a new IList and expects calls to the methods _Add()_ and _Cl
 open System.Collections
 open FsMocks.Syntax
 // create mock object and repository
-use mock = new FsMockRepository()	// use the keyword 'let' instead of 'use' if you don't want verification (But why would you want that anyway?)
+use mock = new FsMockRepository()	// use the keyword 'let' instead of 'use' if you don't want automatic verification (But why would you want that anyway?)
 let mylist1:IList = mock.strict []
 
 // define mock statements
@@ -26,10 +26,10 @@ mock.define Unordered {
 }
 
 // run test.
-// FsMocks will automatically verify expectations at the end of the test. The test will fail if any unexpected call was made
 mylist1.Clear()
 mylist1.Add("another argument") |> should equal 2  // FsUnit syntax
 mylist1.Clear()
+// FsMocks will automatically verify expectations at the end of the test. The test will fail if any unexpected call was made
 ```
 
 A mock definition can either be _Unordered_ or _Ordered_. 
