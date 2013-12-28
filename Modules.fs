@@ -14,7 +14,7 @@ This software/code is distributed under the BSD license (http://opensource.org/l
 namespace FsMocks
 
 /// Create a repository :
-///    let mock = FsMockRepository()
+///    use mock = new FsMockRepository()
 /// Create a mock object :
 ///    let mylist:IList = mock.strict []       // other commands : strict/reuseImplementation/autoProperties/withDefaultValues
 /// Create an event raiser :
@@ -52,13 +52,18 @@ module Syntax =
     let times = Times
     
     type ExpectationBuilder(recorder:IDisposable) =
+        let closingExpressionEvent = new Event<_>()
+        [<CLIEvent>]
+        member x.OnClosingExpression = closingExpressionEvent.Publish
         member x.Zero () = ()
         member x.Delay (f) =
             f() |> ignore
             recorder.Dispose()
+            closingExpressionEvent.Trigger()
 
     type FsMockRepository() =
         let repo = new MockRepository()
+        let mutable nestingLevel = 0
         /// aka StrictMock : Only the methods that were explicitly recorded are accepted as valid. This means that any call that is not expected would cause an exception and fail the test. All the expected methods must be called if the object is to pass verification.
         /// <param name="args">Class constructor arguments</param>
         member x.strict args = args |> Array.ofList |> repo.StrictMock
@@ -78,11 +83,15 @@ module Syntax =
             repo.BackToRecordAll() // reset all recorders
             raiser
         member x.define (order:OrderOptions) =
-            new ExpectationBuilder(match order with | Unordered -> repo.Unordered() | Ordered -> repo.Ordered())
-        member x.verify (f:unit->unit) = 
-            repo.ReplayAll()
-            use recorder = repo.Playback()
-            f()
+            nestingLevel <- nestingLevel+1
+            let builder = new ExpectationBuilder(match order with | Unordered -> repo.Unordered() | Ordered -> repo.Ordered())
+            builder.OnClosingExpression |> Event.add (fun _ ->
+                nestingLevel<-nestingLevel-1
+                if nestingLevel=0 then repo.ReplayAll()
+                )
+            builder
+
+        interface IDisposable with member x.Dispose() = repo.VerifyAll()
 
     let ignore_arguments _ =
         LastCall.IgnoreArguments() |> ignore
@@ -120,6 +129,11 @@ module Syntax =
     
     let returns (value:obj) _ =
         LastCall.Return(value) |> ignore
+
+    let returns_outref_params ([<ParamArray>] values:obj[]) _ =
+        if values.Length=1 then LastCall.OutRef(values.[0]) else LastCall.OutRef(values)
+            |> ignore
+
     let throws exceptionInstance _ =
         LastCall.Throw(exceptionInstance) |> ignore
 

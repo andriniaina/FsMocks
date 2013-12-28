@@ -7,7 +7,7 @@ open System.Collections.Generic
 (*
 module ActionExpectation =
     let [<Fact>] ``unit->unit expectation helper``() =
-        let mock = FsMockRepository()
+        use mock = new FsMockRepository()
         let o:AnyInterface = mock.strict []
         mock.define Unordered {
             // this syntax is similar to : o.DoSomething() |> expected once

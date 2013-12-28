@@ -8,17 +8,15 @@ open System.Collections.Generic
 
 module autoProperties = 
     let [<Fact>] ``autoProperties/stub get and set, and method calls``() =
-        let mock = FsMockRepository()
+        use mock = new FsMockRepository()
         let o:Control = mock.autoProperties []
         mock.define Unordered {
             ()  // no expectation : it's a stub : everything is allowed, all methods are return a default value, all properties are wired as autoproperties
         }
-        mock.verify (fun() ->
-            // check autoproperty
-            o.Text <- "Coucou"
-            Assert.Equal<string>("Coucou", o.Text)
-            // call any virtual method : we should raise no error
-            o.ResetText()
-            o.Refresh()
-        )
+        // check autoproperty
+        o.Text <- "Coucou"
+        Assert.Equal<string>("Coucou", o.Text)
+        // call any virtual method : we should raise no error
+        o.ResetText()
+        o.Refresh()
 

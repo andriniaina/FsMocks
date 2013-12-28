@@ -16,7 +16,7 @@ This sample creates a new IList and expects calls to the methods _Add()_ and _Cl
 open System.Collections
 open FsMocks.Syntax
 // create mock object and repository
-let mock = FsMockRepository()
+use mock = new FsMockRepository()	// use the keyword 'let' instead of 'use' if you don't want verification (But why would you want that anyway?)
 let mylist1:IList = mock.strict []
 
 // define mock statements
@@ -25,13 +25,11 @@ mock.define Unordered {
   mylist1.Clear() |> expected twice
 }
 
-// test and verify expectations !!
-// the test will fail if any unexpected calls was made in the 'verify' block
-mock.verify (fun()->
-	mylist1.Clear()
-	mylist1.Add("another argument") |> should equal 2  // FsUnit syntax
-	mylist1.Clear()
-)
+// run test.
+// FsMocks will automatically verify expectations at the end of the test. The test will fail if any unexpected call was made
+mylist1.Clear()
+mylist1.Add("another argument") |> should equal 2  // FsUnit syntax
+mylist1.Clear()
 ```
 
 The function _mock.define_ takes two arguments: a mocking option (_Unordered_ or _Ordered_) and a computation expression that takes a series of mock statements.
@@ -63,10 +61,8 @@ let clickRaiser = mock.getEventRaiser(b.Click)
 mock.define Ordered {
     b.Click |> subscription expected once
 }
-mock.verify (fun()->
-    b.Click |> Event.add (fun _ -> System.Console.WriteLine "clicked!" )
-    clickRaiser.Raise(b, new EventArgs()) // this prints "clicked!"
-)
+b.Click |> Event.add (fun _ -> System.Console.WriteLine "clicked!" )
+clickRaiser.Raise(b, new EventArgs()) // this prints "clicked!"
 ```
 
 Mock statements can be combined in no particular order

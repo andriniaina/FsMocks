@@ -7,25 +7,23 @@ open System.Collections.Generic
 
 module ForceImplementation =
     let [<Fact>] ``property autoimplementation``() =
-        let mock = FsMockRepository()
+        use mock = new FsMockRepository()
         let o:AnyInterface = mock.strict []
         mock.define Unordered {
             o.VirtualProperty |> implement_as_property
         }
-        mock.verify (fun() ->
-            o.VirtualProperty <- "value"
-            Assert.Equal<string>("value", o.VirtualProperty)
-            )
+        o.VirtualProperty <- "value"
+        Assert.Equal<string>("value", o.VirtualProperty)
+
     let [<Fact>] ``manual method implementation``() =
         let v = ref ""
         let changeValue () = v:="value"
-        let mock = FsMockRepository()
+        use mock = new FsMockRepository()
         let o:AnyInterface = mock.strict []
         mock.define Unordered {
             o.DoSomething() |> implement_as (new Action(changeValue))
         }
-        mock.verify (fun() ->
-            Assert.Equal<string>("", !v)
-            o.DoSomething()
-            Assert.Equal<string>("value", !v)
-            )
+
+        Assert.Equal<string>("", !v)
+        o.DoSomething()
+        Assert.Equal<string>("value", !v)
