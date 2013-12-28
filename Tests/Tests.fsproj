@@ -58,12 +58,12 @@
     <Compile Include="ThrowExpections.fs" />
     <Compile Include="ReturnValues.fs" />
     <Compile Include="ForceImplementation.fs" />
-    <Compile Include="ActionExpectation.fs" />
     <Compile Include="Events.fs" />
     <Compile Include="OrderedExpectations.fs" />
     <Compile Include="reuseImplementation.fs" />
     <Compile Include="autoProperties.fs" />
     <Compile Include="withDefaultValues.fs" />
+    <Compile Include="OutRef.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FsMocks.fsproj">

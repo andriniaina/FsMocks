@@ -130,7 +130,7 @@ module Syntax =
     let returns (value:obj) _ =
         LastCall.Return(value) |> ignore
 
-    let returns_outref_params ([<ParamArray>] values:obj[]) _ =
+    let returns_outref_params ([<ParamArray>] values:Object[]) _ =
         if values.Length=1 then LastCall.OutRef(values.[0]) else LastCall.OutRef(values)
             |> ignore
 
