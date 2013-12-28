@@ -22,7 +22,7 @@ namespace FsMocks
 /// Define expectations :
 ///    mock.define Ordered {   /*mock statements*/   }
 /// Verify expectations :
-///    mock.verify (fun()->   /*test statements*/   )
+///    expectations are automatically verified when the mock repository is disposed
 ///
 ///  example mock statements :
 ///    mylist.Add 1 |> expected twice |> only_if_argument [Is.NotNull()] |> returns 1
@@ -65,16 +65,16 @@ module Syntax =
         let repo = new MockRepository()
         let mutable nestingLevel = 0
         /// aka StrictMock : Only the methods that were explicitly recorded are accepted as valid. This means that any call that is not expected would cause an exception and fail the test. All the expected methods must be called if the object is to pass verification.
-        /// <param name="args">Class constructor arguments</param>
+        /// <param name="args">Constructor arguments for base class</param>
         member x.strict args = args |> Array.ofList |> repo.StrictMock
         /// aka PartialMock : Mocking only requested methods: This is available for classes only. It basically means that any non abstract method call will use the original method (no mocking) instead of relying on Rhino Mocks' expectations. You can selectively decide which methods should be mocked.
-        /// <param name="args">Class constructor arguments</param>
+        /// <param name="args">Constructor arguments for base class</param>
         member x.reuseImplementation args = args |> Array.ofList |> repo.PartialMock
         /// aka Stub : Create a dynamic mock and call PropertyBehavior on its properties
-        /// <param name="args">Class constructor arguments</param>
+        /// <param name="args">Constructor arguments for base class</param>
         member x.autoProperties args = args |> Array.ofList |> repo.Stub
         /// aka DynamicMocks : All method calls during the replay state are accepted. If there is no special handling setup for a given method, a null or zero is returned. All of the expected methods must be called for the object to pass verification.
-        /// <param name="args">Class constructor arguments</param>
+        /// <param name="args">Constructor arguments for base class</param>
         member x.emptyImplementation args = args |> Array.ofList |> repo.DynamicMock
         /// !! this should be called before mock definitions
         member x.getEventRaiser (evt) =
