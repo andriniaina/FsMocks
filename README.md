@@ -32,7 +32,8 @@ mylist1.Add("another argument") |> should equal 2  // FsUnit syntax
 mylist1.Clear()
 ```
 
-The function _mock.define_ takes two arguments: a mocking option (_Unordered_ or _Ordered_) and a computation expression that takes a series of mock statements.
+A mock definition can either be _Unordered_ or _Ordered_. 
+It takes a series of mock statements.
 
 A mock statement is a unit expression that begins with the call or property to mock followed by mock directives:
 ```fsharp
@@ -69,4 +70,31 @@ Mock statements can be combined in no particular order
 
 ```fsharp
 o.Call(1) |> returns 1 |> only_if_argument [Is.NotNull()] |> expected at_least_once
+```
+
+Mock definitions can be nested:
+```fsharp
+let [<Fact>] ``1b) 2 Ordered nested in 1 Unordered``() =
+	// create mocks
+	use mock = new FsMockRepository()
+	let list:int IList = mock.strict []
+	// mock definition
+	mock.define Unordered {
+		mock.define Ordered {
+			list.Add(1) |> expected once
+			list.Add(2) |> expected once
+		}
+		mock.define Ordered {
+			list.Add(3) |> expected twice
+			list.Contains(5) |> expected once |> returns true
+		}
+	}
+
+	// run test
+	list.Add(3)
+	list.Add(3)
+	Assert.True(list.Contains(5))
+	list.Add(1)
+	list.Add(2)
+	// verify expectations
 ```

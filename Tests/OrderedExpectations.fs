@@ -46,24 +46,28 @@ module OrderedExpectations =
         list.Add(4)
 
     let [<Fact>] ``1b) 2 Ordered nested in 1 Unordered``() =
+        // create mocks
         use mock = new FsMockRepository()
         let list:int IList = mock.strict []
+        // mock definition
         mock.define Unordered {
             mock.define Ordered {
                 list.Add(1) |> expected once
                 list.Add(2) |> expected once
             }
             mock.define Ordered {
-                list.Add(3) |> expected once
-                list.Add(4) |> expected twice
+                list.Add(3) |> expected twice
+                list.Contains(5) |> expected once |> returns true
             }
         }
 
+        // run test
         list.Add(3)
-        list.Add(4)
-        list.Add(4)
+        list.Add(3)
+        Assert.True(list.Contains(5))
         list.Add(1)
         list.Add(2)
+        // verify expectations
 
     let [<Fact>] ``2) 2 Ordered nested in 1 Unordered, unexpected``() =
         Assert.Throws<Rhino.Mocks.Exceptions.ExpectationViolationException>(fun () ->
