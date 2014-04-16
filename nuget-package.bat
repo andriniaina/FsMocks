@@ -14,3 +14,4 @@ FOR %%F IN (*.nupkg) DO (
 ..\NuGet.exe Push "%filename%"
 
 
+pause

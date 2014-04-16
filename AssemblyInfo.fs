@@ -11,7 +11,7 @@ open System.Runtime.InteropServices
 [<assembly: AssemblyConfiguration("")>]
 [<assembly: AssemblyCompany("Andri Rakotomalala")>]
 [<assembly: AssemblyProduct("FsMocks")>]
-[<assembly: AssemblyCopyright("Copyright © Andri Rakotomalala, Inc. 2012")>]
+[<assembly: AssemblyCopyright("Copyright © Andri Rakotomalala, 2012")>]
 [<assembly: AssemblyTrademark("")>]
 [<assembly: AssemblyCulture("")>]
 
