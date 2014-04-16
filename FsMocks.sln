@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "FsMocks", "FsMocks.fsproj", "{A085B9EC-8283-41E0-B8F1-E8EB21DE9774}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Tests", "Tests\Tests.fsproj", "{82E0E98B-4A22-4FD3-AC60-5789A6746C98}"
