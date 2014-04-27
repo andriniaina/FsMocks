@@ -39,26 +39,26 @@ mylist1.Clear()
 A mock definition can either be _Unordered_ or _Ordered_. 
 It takes a series of mock statements.
 
-A mock statement begins with "~~", followed by the call or property to mock, followed by mock directives, and usually ends with `|> end_expectation` (a synonym of `|> ignore`):
+A mock statement begins with `~~`, followed by the call or property to mock, followed by mock directives, and usually ends with `|> end_expectation` (a synonym of `|> ignore`):
 ```fsharp
 // the call is expected twice
-~~ o.call() |> expected twice 
+~~ o.call() |> expected twice |> end_expectation 
 
 // the mock object will return 219 when this expectation is satisfied
-~~ o.call("some arg") |> returns 219
+~~ o.call("some arg") |> returns 219 |> end_expectation
 
 // the call is expected only if it respects the given constraints
-~~ o.call(arg) |> only_if_argument [Is.NotNull()] 
+~~ o.call(arg) |> only_if_argument [Is.NotNull()] |> end_expectation 
 
 // Property1 will be implemented as a simple get/set property
-~~ o.Property1 |> implement_as_property
+~~ o.Property1 |> implement_as_property |> end_expectation
 
 // the most powerful statement : the call is manually implemented
 let myCustomClearImplementation() = System.Console.WriteLine("list cleared!!!")
-~~ list.Clear() |> implement_as (new Action(myCustomClearImplementation))
+~~ list.Clear() |> implement_as (new Action(myCustomClearImplementation)) |> end_expectation
 
 // throws an exception whenever a method is called
-~~ o.call() |> throws (new Exception("Something went wrong!!"))
+~~ o.call() |> throws (new Exception("Something went wrong!!")) |> end_expectation
 
 // subscribe to an event and simulate an event
 let b:Button = mock.strict []
