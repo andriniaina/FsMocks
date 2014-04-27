@@ -39,7 +39,7 @@ mylist1.Clear()
 A mock definition can either be _Unordered_ or _Ordered_. 
 It takes a series of mock statements.
 
-A mock statement begins with "~~", followed by the call or property to mock, followed by mock directives, and usually ends with `|> end_expectation` (a synonym of `|> ignore`):
+A mock statement begins with `~~`, followed by the call or property to mock, followed by mock directives, and usually ends with `|> end_expectation` (a synonym of `|> ignore`):
 ```fsharp
 // the call is expected twice
 ~~ o.call() |> expected twice 
