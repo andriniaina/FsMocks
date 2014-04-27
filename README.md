@@ -25,8 +25,8 @@ let mylist1:IList = mock.strict []
 
 // define mock statements
 mock.define Unordered {
-  ~~ mylist1.Add "e" |> expected once |> returns 2 |> only_if_argument [Is.NotNull()] |> end_expectation
-  ~~ mylist1.Clear() |> expected twice |> end_expectation
+  ~~ mylist1.Add "e" |> expected once |> returns 2 |> only_if_argument [Is.NotNull()]
+  ~~ mylist1.Clear() |> expected twice
 }
 
 // run test.
@@ -39,26 +39,28 @@ mylist1.Clear()
 A mock definition can either be _Unordered_ or _Ordered_. 
 It takes a series of mock statements.
 
-A mock statement begins with `~~`, followed by the call or property to mock, followed by mock directives, and usually ends with `|> end_expectation` (a synonym of `|> ignore`):
+A mock statement begins with `~~`, followed by the call or property to mock, followed by mock directives:
+
+
 ```fsharp
 // the call is expected twice
-~~ o.call() |> expected twice |> end_expectation 
+~~ o.call() |> expected twice 
 
 // the mock object will return 219 when this expectation is satisfied
-~~ o.call("some arg") |> returns 219 |> end_expectation
+~~ o.call("some arg") |> returns 219
 
 // the call is expected only if it respects the given constraints
-~~ o.call(arg) |> only_if_argument [Is.NotNull()] |> end_expectation 
+~~ o.call(arg) |> only_if_argument [Is.NotNull()] 
 
 // Property1 will be implemented as a simple get/set property
-~~ o.Property1 |> implement_as_property |> end_expectation
+~~ o.Property1 |> implement_as_property
 
 // the most powerful statement : the call is manually implemented
 let myCustomClearImplementation() = System.Console.WriteLine("list cleared!!!")
-~~ list.Clear() |> implement_as (new Action(myCustomClearImplementation)) |> end_expectation
+~~ list.Clear() |> implement_as (new Action(myCustomClearImplementation))
 
 // throws an exception whenever a method is called
-~~ o.call() |> throws (new Exception("Something went wrong!!")) |> end_expectation
+~~ o.call() |> throws (new Exception("Something went wrong!!"))
 
 // subscribe to an event and simulate an event
 let b:Button = mock.strict []
@@ -70,10 +72,10 @@ b.Click |> Event.add (fun _ -> System.Console.WriteLine "clicked!" )
 clickRaiser.Raise(b, new EventArgs()) // this prints "clicked!"
 ```
 
-Mock statements can be combined in no particular order
+Mock statements can be combined in no particular order, except for the `returns` statement that must be on the first position and cannot end a statement (in this case, you can just add `|> expected once` to end the statement)
 
 ```fsharp
-~~ o.Call(1) |> returns 1 |> only_if_argument [Is.NotNull()] |> expected at_least_once |> end_expectation
+~~ o.Call(1) |> returns 1 |> only_if_argument [Is.NotNull()] |> expected at_least_once
 ```
 
 Mock definitions can be nested:
@@ -85,12 +87,12 @@ let [<Fact>] ``1b) 2 Ordered nested in 1 Unordered``() =
 	// mock definition
 	mock.define Unordered {
 		mock.define Ordered {
-			~~ list.Add(1) |> expected once |> end_expectation
-			~~ list.Add(2) |> expected once |> end_expectation
+			~~ list.Add(1) |> expected once
+			~~ list.Add(2) |> expected once
 		}
 		mock.define Ordered {
-			~~ list.Add(3) |> expected twice |> end_expectation
-			~~ list.Contains(5) |> expected once |> returns true |> end_expectation
+			~~ list.Add(3) |> expected twice
+			~~ list.Contains(5) |> expected once |> returns true
 		}
 	}
 

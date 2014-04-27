@@ -30,7 +30,7 @@ module ArgumentTests =
         use mock = new FsMockRepository()
         let list:int IList = mock.strict []
         mock.define Unordered {
-            ~~ list.Add(1) |> ignore_arguments |> end_expectation
+            ~~ list.Add(1) |> ignore_arguments
         }
         
         list.Add(20)
@@ -40,8 +40,8 @@ module ArgumentTests =
         use mock = new FsMockRepository()
         let list:int IList = mock.strict []
         mock.define Unordered {
-            ~~ list.Contains(0) |> only_if_argument [Is.LessThanOrEqual(300)] |> returns false |> end_expectation
-            ~~ list.Contains(0) |> only_if_argument [Is.GreaterThan(300)] |> returns true |> end_expectation
+            ~~ list.Contains(0) |> returns false |> only_if_argument [Is.LessThanOrEqual(300)]
+            ~~ list.Contains(0) |> returns true |> only_if_argument [Is.GreaterThan(300)]
         }
         Assert.False(list.Contains(2))
         Assert.True(list.Contains(20000))

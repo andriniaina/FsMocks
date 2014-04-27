@@ -75,25 +75,23 @@ module Syntax =
 
         interface IDisposable with member x.Dispose() = repo.VerifyAll()
 
-    let ignore_arguments (m:Interfaces.IMethodOptions<_>) =
-        m.IgnoreArguments()
+    let ignore_arguments _ =
+        LastCall.IgnoreArguments() |> ignore
     let for_any_argument_value =
         ignore_arguments
     let ignore_property_setter =
         ignore_arguments
 
     /// use any Rhino.Mocks.Constraint.*
-    let only_if_argument constraints (m:Interfaces.IMethodOptions<_>) = 
-        m.Constraints(Array.ofList(constraints))
+    let only_if_argument constraints _ = 
+        LastCall.Constraints(Array.ofList(constraints)) |> ignore
         
     let ToAction (f:unit->unit) =
         new Action(f)
 
-    let end_expectation _ = ()
-
     let (~~) (result:'a) = Expect.Call(result)
         
-    let expected occurence (m:Interfaces.IMethodOptions<_>) =
+    let expected occurence _ =
         let translate_repetition occurence (r:Interfaces.IRepeat<_>) =
             match occurence with
                 | AnyTime -> r.Any()
@@ -101,13 +99,13 @@ module Syntax =
                 | Twice -> r.Twice()
                 | AtLeastOnce -> r.AtLeastOnce()
                 | Times(i) -> r.Times(i)
-        m.Repeat |> translate_repetition occurence
+        LastCall.Repeat |> translate_repetition occurence |> ignore
 
-    let implement_as_property (m:Interfaces.IMethodOptions<_>) =
-        m.PropertyBehavior()
+    let implement_as_property _ =
+        LastCall.PropertyBehavior() |> ignore
     let autoproperty = new Action(fun()->())
-    let implement_as f (m:Interfaces.IMethodOptions<_>) =
-        m.Do(f)
+    let implement_as f _ =
+        LastCall.Do(f) |> ignore
 
     /// same as 'expected' but for events
     /// usual syntax :     event |> subscription expected twice
@@ -116,11 +114,11 @@ module Syntax =
         LastCall.IgnoreArguments() |> expectation_function occurence |> ignore
     
     let returns (value:_) (m:Interfaces.IMethodOptions<_>) =
-        m.Return(value)
+        m.Return(value) |> ignore
 
     let returns_outref_params ([<ParamArray>] values:Object[]) (m:Interfaces.IMethodOptions<_>) =
         if values.Length=1 then m.OutRef(values.[0]) else m.OutRef(values)
 
-    let throws exceptionInstance (m:Interfaces.IMethodOptions<_>) =
-        m.Throw(exceptionInstance)
+    let throws exceptionInstance _ =
+        LastCall.Throw(exceptionInstance) |> ignore
 

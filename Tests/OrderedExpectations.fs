@@ -9,8 +9,8 @@ module OrderedExpectations =
         use mock = new FsMockRepository()
         let list:int IList = mock.strict []
         mock.define Ordered {
-            list.Add(1) |> end_expectation
-            list.Add(2) |> end_expectation
+            list.Add(1)
+            list.Add(2)
         }
         list.Add(1)
         list.Add(2)
@@ -20,8 +20,8 @@ module OrderedExpectations =
             use mock = new FsMockRepository()
             let list:int IList = mock.strict []
             mock.define Ordered {
-                list.Add(1) |> end_expectation
-                list.Add(2) |> end_expectation
+                list.Add(1)
+                list.Add(2)
             }
             list.Add(2)
             list.Add(1)
@@ -32,12 +32,12 @@ module OrderedExpectations =
         let list:int IList = mock.strict []
         mock.define Unordered {
             mock.define Ordered {
-                list.Add(1) |> end_expectation
-                list.Add(2) |> end_expectation
+                list.Add(1)
+                list.Add(2)
             }
             mock.define Ordered {
-                list.Add(3) |> end_expectation
-                list.Add(4) |> end_expectation
+                list.Add(3)
+                list.Add(4)
             }
         }
         list.Add(1)
@@ -52,12 +52,12 @@ module OrderedExpectations =
         // mock definition
         mock.define Unordered {
             mock.define Ordered {
-                ~~ list.Add(1) |> end_expectation
-                ~~ list.Add(2) |> end_expectation
+                ~~ list.Add(1) |> expected once
+                ~~ list.Add(2) |> expected once
             }
             mock.define Ordered {
-                ~~ list.Add(3) |> expected twice |> end_expectation
-                ~~ list.Contains(5) |> returns true |> end_expectation
+                ~~ list.Add(3) |> expected twice
+                ~~ list.Contains(5) |> returns true
             }
         }
 
@@ -75,12 +75,12 @@ module OrderedExpectations =
             let list:int IList = mock.strict []
             mock.define Unordered {
                 mock.define Ordered {
-                    list.Add(1) |> end_expectation
-                    list.Add(2) |> end_expectation
+                    list.Add(1)
+                    list.Add(2)
                 }
                 mock.define Ordered {
-                    list.Add(3) |> end_expectation
-                    list.Add(4) |> end_expectation
+                    list.Add(3)
+                    list.Add(4)
                 }
             }
             list.Add(1)
@@ -94,12 +94,12 @@ module OrderedExpectations =
         let list:int IList = mock.strict []
         mock.define Ordered {
             mock.define Unordered {
-                list.Add(1) |> end_expectation
-                list.Add(2) |> end_expectation
+                list.Add(1)
+                list.Add(2)
             }
             mock.define Unordered {
-                list.Add(3) |> end_expectation
-                list.Add(4) |> end_expectation
+                list.Add(3)
+                list.Add(4)
             }
         }
         list.Add(2)
@@ -113,12 +113,12 @@ module OrderedExpectations =
             let list:int IList = mock.strict []
             mock.define Ordered {
                 mock.define Unordered {
-                    list.Add(1) |> end_expectation
-                    list.Add(2) |> end_expectation
+                    list.Add(1)
+                    list.Add(2)
                 }
                 mock.define Unordered {
-                    list.Add(3) |> end_expectation
-                    list.Add(4) |> end_expectation
+                    list.Add(3)
+                    list.Add(4)
                 }
             }
             list.Add(4)

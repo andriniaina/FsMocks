@@ -10,7 +10,7 @@ module ForceImplementation =
         use mock = new FsMockRepository()
         let o:AnyInterface = mock.strict []
         mock.define Unordered {
-            ~~ o.VirtualProperty |> implement_as_property |> end_expectation
+            ~~ o.VirtualProperty |> implement_as_property
         }
         o.VirtualProperty <- "value"
         Assert.Equal<string>("value", o.VirtualProperty)
@@ -21,7 +21,7 @@ module ForceImplementation =
         use mock = new FsMockRepository()
         let o:AnyInterface = mock.strict []
         mock.define Unordered {
-            ~~ o.DoSomething() |> implement_as (new Action(changeValue)) |> end_expectation
+            ~~ o.DoSomething() |> implement_as (new Action(changeValue))
         }
 
         Assert.Equal<string>("", !v)

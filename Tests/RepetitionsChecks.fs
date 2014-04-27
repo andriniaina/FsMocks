@@ -9,7 +9,7 @@ module RepetitionsTests =
         use mock = new FsMockRepository()
         let list:int IList = mock.strict []
         mock.define Unordered {
-            ~~ list.Clear() |> end_expectation
+            ~~ list.Clear() |> expected once
         }
         list.Clear()
 
@@ -17,7 +17,7 @@ module RepetitionsTests =
         use mock = new FsMockRepository()
         let list:int IList = mock.strict []
         mock.define Unordered {
-            ~~ list.Clear() |> expected once |> end_expectation
+            ~~ list.Clear() |> expected once
         }
         list.Clear()
 
@@ -25,7 +25,7 @@ module RepetitionsTests =
         use mock = new FsMockRepository()
         let list:int IList = mock.strict []
         mock.define Unordered {
-            ~~ list.Clear() |> expected twice |> end_expectation
+            ~~ list.Clear() |> expected twice
         }
         list.Clear()
         list.Clear()
@@ -34,7 +34,7 @@ module RepetitionsTests =
         use mock = new FsMockRepository()
         let list:int IList = mock.strict []
         mock.define Unordered {
-            ~~ list.Clear() |> expected (times 7) |> end_expectation
+            ~~ list.Clear() |> expected (times 7)
         }
         for i in 1..7 do list.Clear()
             
@@ -42,14 +42,14 @@ module RepetitionsTests =
         use mock = new FsMockRepository()
         let list:int IList = mock.strict []
         mock.define Unordered {
-            ~~ list.Clear() |> expected at_any_moment |> end_expectation
+            ~~ list.Clear() |> expected at_any_moment
         }
 
     let [<Fact>] ``3b) simple strict mock with repetition=AnyTime called N times``() =
         use mock = new FsMockRepository()
         let list:int IList = mock.strict []
         mock.define Unordered {
-            ~~ list.Clear() |> expected at_any_moment |> end_expectation
+            ~~ list.Clear() |> expected at_any_moment
         }
         for i in 0..13 do list.Clear()
             
@@ -58,7 +58,7 @@ module RepetitionsTests =
             use mock = new FsMockRepository()
             let list:int IList = mock.strict []
             mock.define Unordered {
-                ~~ list.Clear() |> expected at_least_once |> end_expectation
+                ~~ list.Clear() |> expected at_least_once
             }
         )
         
@@ -66,7 +66,7 @@ module RepetitionsTests =
         use mock = new FsMockRepository()
         let list:int IList = mock.strict []
         mock.define Unordered {
-            ~~ list.Clear() |> expected at_least_once |> end_expectation
+            ~~ list.Clear() |> expected at_least_once
         }
         list.Clear()
         
@@ -74,7 +74,7 @@ module RepetitionsTests =
         use mock = new FsMockRepository()
         let list:int IList = mock.strict []
         mock.define Unordered {
-            ~~ list.Clear() |> expected at_least_once |> end_expectation
+            ~~ list.Clear() |> expected at_least_once
         }
         list.Clear()
         list.Clear()

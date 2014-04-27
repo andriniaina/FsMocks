@@ -10,7 +10,7 @@ module ThrowExpections =
         use mock = new FsMockRepository()
         let list:int IList = mock.strict []
         mock.define Unordered {
-            ~~ list.Clear() |> throws (new ApplicationException()) |> end_expectation
+            ~~ list.Clear() |> throws (new ApplicationException())
         }
         
         Assert.Throws<ApplicationException>(fun () -> list.Clear())
