@@ -13,7 +13,7 @@ module Events =
         let clickButtonEvent = mock.getEventRaiser (b.Click)
 
         mock.define Unordered {
-            b.Click |> subscription expected once |> end_expectation
+            b.Click |> subscription expected once
         }
 
         let clicked = ref false
