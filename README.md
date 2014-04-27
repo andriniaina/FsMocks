@@ -72,7 +72,7 @@ b.Click |> Event.add (fun _ -> System.Console.WriteLine "clicked!" )
 clickRaiser.Raise(b, new EventArgs()) // this prints "clicked!"
 ```
 
-Mock statements can be combined in no particular order, except for the `returns` statement that must be on the first position and cannot end a statement (in this case, you can just add `|> expected once` to end the statement)
+Mock directives can be combined in no particular order, except for the `returns` directive that must be on the first position and cannot end a statement (in this case, you can just add `|> expected once` to end the statement)
 
 ```fsharp
 ~~ o.Call(1) |> returns 1 |> only_if_argument [Is.NotNull()] |> expected at_least_once
