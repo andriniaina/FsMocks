@@ -25,7 +25,7 @@ let mylist1:IList = mock.strict []
 
 // define mock statements
 mock.define Unordered {
-  ~~ mylist1.Add "e" |> expected once |> returns 2 |> only_if_argument [Is.NotNull()]
+  ~~ mylist1.Add "e" |> returns 2 |> expected once |> only_if_argument [Is.NotNull()]
   ~~ mylist1.Clear() |> expected twice
 }
 
