@@ -25,8 +25,8 @@ let mylist1:IList = mock.strict []
 
 // define mock statements
 mock.define Unordered {
-  mylist1.Add "e" |> expected once |> returns 2 |> only_if_argument [Is.NotNull()]
-  mylist1.Clear() |> expected twice
+  ~~ mylist1.Add "e" |> expected once |> returns 2 |> only_if_argument [Is.NotNull()]
+  ~~ mylist1.Clear() |> expected twice
 }
 
 // run test.
@@ -42,23 +42,23 @@ It takes a series of mock statements.
 A mock statement is a unit expression that begins with the call or property to mock followed by mock directives:
 ```fsharp
 // the call is expected twice
-o.call() |> expected twice 
+~~ o.call() |> expected twice 
 
 // the mock object will return 219 when this expectation is satisfied
-o.call("some arg") |> returns 219
+~~ o.call("some arg") |> returns 219
 
 // the call is expected only if it respects the given constraints
-o.call(arg) |> only_if_argument [Is.NotNull()] 
+~~ o.call(arg) |> only_if_argument [Is.NotNull()] 
 
 // Property1 will be implemented as a simple get/set property
-o.Property1 |> implement_as_property
+~~ o.Property1 |> implement_as_property
 
 // the most powerful statement : the call is manually implemented
 let myCustomClearImplementation() = System.Console.WriteLine("list cleared!!!")
-list.Clear() |> implement_as (new Action(myCustomClearImplementation))
+~~ list.Clear() |> implement_as (new Action(myCustomClearImplementation))
 
 // throws an exception whenever a method is called
-o.call() |> throws (new Exception("Something went wrong!!"))
+~~ o.call() |> throws (new Exception("Something went wrong!!"))
 
 // subscribe to an event and simulate an event
 let b:Button = mock.strict []

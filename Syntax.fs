@@ -13,24 +13,6 @@ This software/code is distributed under the BSD license (http://opensource.org/l
 *)
 namespace FsMocks
 
-/// Create a repository :
-///    use mock = new FsMockRepository()
-/// Create a mock object :
-///    let mylist:IList = mock.strict []       // other commands : strict/reuseImplementation/autoProperties/withDefaultValues
-/// Create an event raiser :
-///    let clickButtonEvent = mock.getEventRaiser (b.Click)
-/// Define expectations :
-///    mock.define Ordered {   /*mock statements*/   }
-/// Verify expectations :
-///    expectations are automatically verified when the mock repository is disposed
-///
-///  example mock statements :
-///    mylist.Add 1 |> expected twice |> only_if_argument [Is.NotNull()] |> returns 1
-///    mylist.Add null |> expected once |> throws (new ArgumentException())
-///    mylist.Count |> implement_as_property
-///    mylist.Item(null) |> for_any_argument_value |> returns 2
-///    let button.Click |> subscription expected once
-///    
 module Syntax =
     open System
     open Rhino.Mocks
@@ -93,47 +75,52 @@ module Syntax =
 
         interface IDisposable with member x.Dispose() = repo.VerifyAll()
 
-    let ignore_arguments _ =
-        LastCall.IgnoreArguments() |> ignore
+    let ignore_arguments (m:Interfaces.IMethodOptions<_>) =
+        m.IgnoreArguments()
     let for_any_argument_value =
         ignore_arguments
     let ignore_property_setter =
         ignore_arguments
 
     /// use any Rhino.Mocks.Constraint.*
-    let only_if_argument constraints _ = 
-        LastCall.Constraints(Array.ofList(constraints)) |> ignore
+    let only_if_argument constraints (m:Interfaces.IMethodOptions<_>) = 
+        m.Constraints(Array.ofList(constraints))
         
     let ToAction (f:unit->unit) =
         new Action(f)
-        
-    let expected occurence _ =
-        match occurence with
-            | AnyTime -> LastCall.Repeat.Any()
-            | Once -> LastCall.Repeat.Once()
-            | Twice -> LastCall.Repeat.Twice()
-            | AtLeastOnce -> LastCall.Repeat.AtLeastOnce()
-            | Times(i) -> LastCall.Repeat.Times(i)
-        |> ignore
 
-    let implement_as_property _ =
-        LastCall.PropertyBehavior() |> ignore
+    let end_expectation _ = ()
+
+    let (~~) (result:'a) = Expect.Call(result)
+        
+    let expected occurence (m:Interfaces.IMethodOptions<_>) =
+        let translate_repetition occurence (r:Interfaces.IRepeat<_>) =
+            match occurence with
+                | AnyTime -> r.Any()
+                | Once -> r.Once()
+                | Twice -> r.Twice()
+                | AtLeastOnce -> r.AtLeastOnce()
+                | Times(i) -> r.Times(i)
+        m.Repeat |> translate_repetition occurence
+
+    let implement_as_property (m:Interfaces.IMethodOptions<_>) =
+        m.PropertyBehavior()
     let autoproperty = new Action(fun()->())
-    let implement_as f _ =
-        LastCall.Do(f) |> ignore
+    let implement_as f (m:Interfaces.IMethodOptions<_>) =
+        m.Do(f)
 
     /// same as 'expected' but for events
     /// usual syntax :     event |> subscription expected twice
     let subscription expectation_function occurence event =
-        event |> Event.add (fun _ -> ()) |> ignore_arguments |> expectation_function occurence
+        event |> Event.add (fun _ -> ())
+        LastCall.IgnoreArguments() |> expectation_function occurence
     
-    let returns (value:obj) _ =
-        LastCall.Return(value) |> ignore
+    let returns (value:_) (m:Interfaces.IMethodOptions<_>) =
+        m.Return(value)
 
-    let returns_outref_params ([<ParamArray>] values:Object[]) _ =
-        if values.Length=1 then LastCall.OutRef(values.[0]) else LastCall.OutRef(values)
-            |> ignore
+    let returns_outref_params ([<ParamArray>] values:Object[]) (m:Interfaces.IMethodOptions<_>) =
+        if values.Length=1 then m.OutRef(values.[0]) else m.OutRef(values)
 
-    let throws exceptionInstance _ =
-        LastCall.Throw(exceptionInstance) |> ignore
+    let throws exceptionInstance (m:Interfaces.IMethodOptions<_>) =
+        m.Throw(exceptionInstance)
 

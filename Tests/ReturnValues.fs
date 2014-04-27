@@ -10,7 +10,7 @@ module ReturnValues =
         use mock = new FsMockRepository()
         let list:int IList = mock.strict []
         mock.define Unordered {
-            list.Contains(1) |> returns true
+            ~~ list.Contains(1) |> returns true |> end_expectation
         }
 
         Assert.True(list.Contains(1))

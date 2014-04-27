@@ -11,7 +11,7 @@ module OutRef =
         use mock = new FsMockRepository()
         let o:AnyInterface = mock.strict []
         mock.define Unordered {
-            o.RefFunction(1, ref "a", ref 5) |> returns_outref_params [|"b"; 6|]
+            ~~ o.RefFunction(1, ref "a", ref 5) |> returns_outref_params [|"b"; 6|] |> end_expectation
         }
         let s1 = ref "a"
         let s2 = ref 5
@@ -24,7 +24,7 @@ module OutRef =
             use mock = new FsMockRepository()
             let o:AnyInterface = mock.strict []
             mock.define Unordered {
-                o.RefFunction(1, ref "a", ref 1) |> returns_outref_params [|"b", 2|]
+                ~~ o.RefFunction(1, ref "a", ref 1) |> returns_outref_params [|"b", 2|] |> end_expectation
             }
             o.RefFunction(1, ref "wrong param", ref 1)
         )
@@ -33,7 +33,7 @@ module OutRef =
         use mock = new FsMockRepository()
         let o:AnyInterface = mock.strict []
         mock.define Unordered {
-            o.RefFunctionWithReturnValue(1, ref "a") |> returns_outref_params [|"b"|] |> returns 2
+            ~~ o.RefFunctionWithReturnValue(1, ref "a") |> returns_outref_params [|"b"|] |> returns 2 |> end_expectation
         }
         let s = ref "a"
         Assert.Equal(2, o.RefFunctionWithReturnValue(1, s))

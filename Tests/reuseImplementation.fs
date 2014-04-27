@@ -11,7 +11,7 @@ module reuseImplementation =
         use mock = new FsMockRepository()
         let o:Control = mock.reuseImplementation []
         mock.define Unordered {
-            o.ToString() |> returns "Coucou" |> expected twice
+            ~~ o.ToString() |> expected twice |> returns "Coucou" |> end_expectation
         }
         // verify expectation
         Assert.Equal<string>("Coucou", o.ToString())
