@@ -113,7 +113,7 @@ module Syntax =
     /// usual syntax :     event |> subscription expected twice
     let subscription expectation_function occurence event =
         event |> Event.add (fun _ -> ())
-        LastCall.IgnoreArguments() |> expectation_function occurence
+        LastCall.IgnoreArguments() |> expectation_function occurence |> ignore
     
     let returns (value:_) (m:Interfaces.IMethodOptions<_>) =
         m.Return(value)

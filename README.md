@@ -25,8 +25,8 @@ let mylist1:IList = mock.strict []
 
 // define mock statements
 mock.define Unordered {
-  ~~ mylist1.Add "e" |> expected once |> returns 2 |> only_if_argument [Is.NotNull()]
-  ~~ mylist1.Clear() |> expected twice
+  ~~ mylist1.Add "e" |> expected once |> returns 2 |> only_if_argument [Is.NotNull()] |> end_expectation
+  ~~ mylist1.Clear() |> expected twice |> end_expectation
 }
 
 // run test.
@@ -39,7 +39,7 @@ mylist1.Clear()
 A mock definition can either be _Unordered_ or _Ordered_. 
 It takes a series of mock statements.
 
-A mock statement is a unit expression that begins with the call or property to mock followed by mock directives:
+A mock statement begins with "~~", followed by the call or property to mock, followed by mock directives, and usually ends with `|> end_expectation` (a synonym of `|> ignore`):
 ```fsharp
 // the call is expected twice
 ~~ o.call() |> expected twice 
@@ -73,7 +73,7 @@ clickRaiser.Raise(b, new EventArgs()) // this prints "clicked!"
 Mock statements can be combined in no particular order
 
 ```fsharp
-o.Call(1) |> returns 1 |> only_if_argument [Is.NotNull()] |> expected at_least_once
+~~ o.Call(1) |> returns 1 |> only_if_argument [Is.NotNull()] |> expected at_least_once |> end_expectation
 ```
 
 Mock definitions can be nested:
@@ -85,12 +85,12 @@ let [<Fact>] ``1b) 2 Ordered nested in 1 Unordered``() =
 	// mock definition
 	mock.define Unordered {
 		mock.define Ordered {
-			list.Add(1) |> expected once
-			list.Add(2) |> expected once
+			~~ list.Add(1) |> expected once |> end_expectation
+			~~ list.Add(2) |> expected once |> end_expectation
 		}
 		mock.define Ordered {
-			list.Add(3) |> expected twice
-			list.Contains(5) |> expected once |> returns true
+			~~ list.Add(3) |> expected twice |> end_expectation
+			~~ list.Contains(5) |> expected once |> returns true |> end_expectation
 		}
 	}
 
