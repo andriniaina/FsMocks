@@ -8,7 +8,7 @@ branches:
 configuration: Release
 build:
   publish_nuget: true
-  verbosity: detailed
+  verbosity: normal
   project: FsMocks.sln
 test:
   assemblies:
