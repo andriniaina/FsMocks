@@ -1,3 +1,7 @@
 test:
-  assemblies:
-     - Tests.dll
+    build:
+        publish_nuget: true
+        project: FsMocks.sln
+
+    assemblies:
+        - Tests.dll

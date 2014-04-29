@@ -8,6 +8,11 @@ FsMocks is an object mocking library written in F#. It is actually a wrapper aro
 The API is simple and straightforward because it uses a human-friendly DSL syntax. 
 It can be combined with other test frameworks (NUnit, xUnit, FsUnit, etc.)
 
+Project status
+---------------------
+The project is not production-ready but usable. I am still making a few syntax changes.
+
+
 NuGet
 ---------------------
 Get the latest package [here](https://www.nuget.org/packages/FsMocks/)
