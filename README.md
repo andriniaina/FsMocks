@@ -72,7 +72,7 @@ b.Click |> Event.add (fun _ -> System.Console.WriteLine "clicked!" )
 clickRaiser.Raise(b, new EventArgs()) // this prints "clicked!"
 ```
 
-Mock directives can be combined in no particular order, except for the `returns` directive that must be on the first position and cannot end a statement (in this case, you can just add `|> expected once` to end the statement)
+Mock directives can be combined in no particular order, except for the `returns` directive which must be on the first position.
 
 ```fsharp
 ~~ o.Call(1) |> returns 1 |> only_if_argument [Is.NotNull()] |> expected at_least_once
@@ -92,7 +92,7 @@ let [<Fact>] ``1b) 2 Ordered nested in 1 Unordered``() =
 		}
 		mock.define Ordered {
 			~~ list.Add(3) |> expected twice
-			~~ list.Contains(5) |> expected once |> returns true
+			~~ list.Contains(5) |> returns true |> expected once
 		}
 	}
 
