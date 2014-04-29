@@ -20,6 +20,6 @@ open System.Runtime.InteropServices
 
 [<assembly: Guid("F4B59E71-51E5-4516-97B2-3A096C763D6A")>]
 
-[<assembly: AssemblyVersion("0.9.*")>]
-[<assembly: AssemblyFileVersion("0.9.0.0")>]
+[<assembly: AssemblyVersion("0.10.*")>]
+[<assembly: AssemblyFileVersion("0.10.0.0")>]
 ()//System.DateTime.Now.ToString() |> ignore
