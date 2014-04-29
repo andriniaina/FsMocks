@@ -1,7 +1,15 @@
-test:
-    build:
-        publish_nuget: true
-        project: FsMocks.sln
 
-    assemblies:
-        - Tests.dll
+
+branches:
+  only:
+    - master
+
+
+configuration: Release
+build:
+  publish_nuget: true
+  verbosity: detailed
+  project: FsMocks.sln
+test:
+  assemblies:
+    - Tests.dll
