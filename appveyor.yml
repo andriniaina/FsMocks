@@ -6,11 +6,25 @@ branches:
 
 
 configuration: Release
+platform: AnyCPU
 build:
     #  publish_nuget: true
   publish_nuget: false
   verbosity: normal
   project: FsMocks.sln
+after_build:
+  - cmd: mkdir %APPVEYOR_BUILD_FOLDER%\artifacts
+  - cmd: "%APPVEYOR_BUILD_FOLDER%\.nuget\Nuget.exe" pack "%APPVEYOR_BUILD_FOLDER%\FsMocks.fsproj" -Properties TargetFrameworkMoniker=.NETFramework,Version=v4.0;Platform=AnyCPU;Configuration=Release;TargetPath=%APPVEYOR_BUILD_FOLDER%\bin\Release\FsMocks.dll -OutputDirectory "%APPVEYOR_BUILD_FOLDER%\artifacts" -BasePath "%APPVEYOR_BUILD_FOLDER%"
 test:
   assemblies:
     - Tests.dll
+artifacts:
+  - path: artifacts\*.nupkg
+    name: NuGet
+
+deploy:
+  provider: NuGet
+#  server:
+  api_key:
+    secure: +rcgWbGWnraBsw7ijL7SE6uOt1Mxk4Bquwp+EuU6H4wSB59+8fmrdwDVebcBSOXM
+#  artifact: /.*\.nupkg/

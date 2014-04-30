@@ -12,6 +12,8 @@ Project status
 ---------------------
 The project is not production-ready but usable. I am still making a few syntax changes.
 
+[![Build status](https://ci.appveyor.com/api/projects/status/9imvvs6o253mc0oh)](https://ci.appveyor.com/project/andriniaina/fsmocks/build/tests)
+
 
 NuGet
 ---------------------
