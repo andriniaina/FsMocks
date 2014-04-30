@@ -11,11 +11,11 @@
     <description>$description$</description>
     <copyright>Copyright © Andri Rakotomalala, 2012</copyright>
     <tags>tdd mocking mocks unittest unittesting</tags>
+  </metadata>
 
 
 	<!-- for some reason, this is required on appveyor -->
 	<files>
 	  <file src="bin\$configuration$\$id$.dll" target="lib\net40\" />
 	</files>
-  </metadata>
 </package>
