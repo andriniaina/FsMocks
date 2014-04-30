@@ -13,8 +13,8 @@ build:
   verbosity: normal
   project: FsMocks.sln
 after_build:
-  - cmd: mkdir %APPVEYOR_BUILD_FOLDER%\artifacts
-  - cmd: "%APPVEYOR_BUILD_FOLDER%\.nuget\Nuget.exe" pack "%APPVEYOR_BUILD_FOLDER%\FsMocks.fsproj" -Properties TargetFrameworkMoniker=.NETFramework,Version=v4.0;Platform=AnyCPU;Configuration=Release;TargetPath=%APPVEYOR_BUILD_FOLDER%\bin\Release\FsMocks.dll -OutputDirectory "%APPVEYOR_BUILD_FOLDER%\artifacts" -BasePath "%APPVEYOR_BUILD_FOLDER%"
+  - cmd: 'mkdir %APPVEYOR_BUILD_FOLDER%\artifacts'
+  - cmd: '"%APPVEYOR_BUILD_FOLDER%\.nuget\Nuget.exe" pack "%APPVEYOR_BUILD_FOLDER%\FsMocks.fsproj" -Properties TargetFrameworkMoniker=.NETFramework,Version=v4.0;Platform=AnyCPU;Configuration=Release;TargetPath=%APPVEYOR_BUILD_FOLDER%\bin\Release\FsMocks.dll -OutputDirectory "%APPVEYOR_BUILD_FOLDER%\artifacts" -BasePath "%APPVEYOR_BUILD_FOLDER%"'
 test:
   assemblies:
     - Tests.dll
