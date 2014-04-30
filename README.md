@@ -17,7 +17,8 @@ The project is not production-ready but usable. I am still making a few syntax c
 
 NuGet
 ---------------------
-Get the latest package [here](https://www.nuget.org/packages/FsMocks/)
+Get the latest package [here](https://www.nuget.org/packages/FsMocks/).
+This package is compiled against F# 3.0. If you wish to use F# 3.1, download and compile the source code.
 
 Samples
 ---------------------
