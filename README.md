@@ -4,14 +4,12 @@ F# mock library
 ---------------------
 
 
-FsMocks is an object mocking library written in F#. It is actually a wrapper around [Rhino.Mocks](http://ayende.com/wiki/Rhino+Mocks+Documentation.ashx) that simplifies mocking with F#. 
+FsMocks is an object mocking library written in F#. It is actually a wrapper around [Rhino.Mocks 3.6](http://ayende.com/wiki/Rhino+Mocks+Documentation.ashx) that simplifies mocking with F#. 
 The API is simple and straightforward because it uses a human-friendly DSL syntax. 
 It can be combined with other test frameworks (NUnit, xUnit, FsUnit, etc.)
 
 Project status
 ---------------------
-The project is not production-ready but usable. I am still making a few syntax changes.
-
 [![Build status](https://ci.appveyor.com/api/projects/status/9imvvs6o253mc0oh)](https://ci.appveyor.com/project/andriniaina/fsmocks/build/tests)
 
 
